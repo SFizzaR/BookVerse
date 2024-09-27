@@ -26,6 +26,9 @@ const PopularPosts = () => {
         </div>
       ))}
     </div>
+    <div className="button">
+                <button className="blog">View all Blog Posts</button>
+            </div>
     </div>
   );
 }
