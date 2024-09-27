@@ -1,0 +1,26 @@
+.book-info {
+    color: white; /* adjust the text color */
+    background-color: black;
+    position: relative;
+    display: flex;
+    justify-content: space-between; /* Ensures content and image are on opposite sides */
+    align-items: center;
+    padding: 10px;
+
+  }
+  .book-info p{
+    font-family: 'Playfair Display';
+    font-size: 20px;
+    font-weight: 400;
+  }
+
+  .book-info h2{
+    font-size: 25px;
+  }
+  
+  .book-info img.small-book-image {
+    width: 100px; /* Adjust as needed */
+    height: auto; /* Maintain aspect ratio */
+    margin-left: 20px; /* Spacing from the text */
+  }
+  

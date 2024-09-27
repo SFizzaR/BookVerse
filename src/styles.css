@@ -1,0 +1,195 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+body{
+    background-color: #000000;
+}
+.start-page {
+    position: relative;
+    min-height: 100vh;
+    background: linear-gradient(130deg, #1a1a1a, #4169e1, #3d007a, #5b2673, #8f3a73);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding-top: 50px;
+    text-align: center;
+    overflow: hidden;
+    height: 100vh; /* Ensure no overflow due to animations */
+}
+
+.image-center{
+    position: absolute;
+    width: 100%; /* Adjust size to cover half the width of the screen */
+    height: 100%; /* Adjust size to cover half the height of the screen */
+    object-fit: cover;
+    margin: 0;
+    padding: 0;
+    animation-duration: 1.5s;
+    animation-fill-mode: both;
+}
+
+
+.image-center {
+    bottom: 0;
+    left: 0%; /* Center the image horizontally */
+    transform: translateX(-50%); /* Ensures the image stays centered */
+    object-fit: cover; /* Ensures the image maintains its aspect ratio */
+    animation-name: slideFromBottom;
+    z-index: 0; /* Ensure it is behind text */
+    
+    /* Improved image quality */
+    image-rendering: -webkit-optimize-contrast; /* Optimize for better rendering in WebKit browsers */
+    image-rendering: optimizeQuality; /* General optimization for most browsers */
+    filter: contrast(120%) brightness(110%) saturate(110%); /* Adjust for better visual quality */
+}
+
+
+
+/* Keyframe animations */
+@keyframes slideFromTop {
+    0% {
+        transform: translateY(-100%);
+        opacity: 0;
+    }
+    100% {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+@keyframes slideFromBottom {
+    0% {
+        transform: translateY(100%);
+        opacity: 0;
+    }
+    100% {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.text-container {
+    position: relative;
+    z-index: 10; /* Ensure it is above images */
+    text-align: justify;
+    padding: 20px; /* Adjust padding as needed */
+}
+
+.book-cafe {
+    transform: translateY(-96px); /* Adjust the value to move it up */
+    font-family: 'Playfair Display';
+    font-size: 90px;
+    color: whitesmoke;
+    display: block;
+    width: fit-content;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+
+.description {
+    color: whitesmoke;
+    font-size: 40px;
+    font-family: Garamond, serif;
+    padding-left: 10px;
+
+}
+
+.button {
+    display: flex;
+    justify-content: center; /* Center buttons horizontally */
+    gap: 20px; /* Space between buttons */
+    margin-top: 20px; /* Space above the buttons */
+}
+
+.blog, .moreQuotes, .Subscribe{
+    background: linear-gradient(145deg, #6200ea, #7a288a, #452064);
+
+    /* Gradient for 3D effect */
+    border: none; /* Removes the border */
+    border-radius: 20px;
+    font-family: 'Cookie', cursive; /* Corrected font family name */
+    color: #fff;
+    margin: 0; /* Remove extra margin */
+    font-size: 27px;
+    padding: 10px 20px; /* Add padding for better button size */
+    box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.3), -5px -5px 10px rgba(255, 255, 255, 0.1); /* Shadow for 3D effect */
+    transition: box-shadow 0.3s ease; /* Smooth transition on hover */
+    cursor: pointer; /* Pointer cursor for button */
+}
+
+.blog:hover, .moreQuotes:hover, .Subscribe:hover{
+    box-shadow: inset 5px 5px 10px rgba(0, 0, 0, 0.3), inset -5px -5px 10px rgba(255, 255, 255, 0.1); /* Inverted shadow on hover */
+}
+#navbar {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    background-color: #7777aa; /* Semi-transparent background */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Add a slight shadow for better visibility */
+    padding: 10px 0;
+    z-index: 1000; /* Ensures the navbar stays above other elements */
+    text-align: center;
+}
+
+#navbar a {
+    font-size: 20px;
+    font-family: 'Cookies', serif;
+    margin-left: 20px;
+    color: #FFF0D9;
+}
+#navbar a:hover {
+    color: #ffffff; /* Brighten text on hover */
+    text-shadow: 1px 1px 3px rgba(255, 255, 255, 0.7); /* Subtle glow */
+}
+
+#navbar a:visited {
+    color: #F6BC8C;
+}
+
+  
+  
+.newsletter {
+    display: flex;
+    flex-direction: column; /* Stack items vertically */
+    align-items: center; /* Center items horizontally */
+    background: linear-gradient(130deg, #1a1a1a, #4169e1, #3d007a, #5b2673, #8f3a73);
+    background-attachment: fixed;
+  
+}
+
+.newsletter h4 {
+    color: white;
+    font-size: 24px;
+    margin-bottom: 20px;
+    padding: 10px;
+}
+
+.newsletter input {
+    font-size: 20px; /* Increases text size inside input */
+    padding: 15px; /* Adds padding inside the input */
+    width: 60%; /* Adjust the width of the input field */
+    border-radius: 10px; /* Adds rounded corners */
+    border: 1px solid #ccc;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.newsletter .button {
+    display: flex;
+    justify-content: center;
+    padding: 10px;
+}
+
+
+.social-icons{
+    background-color: #7777aa;
+    padding: 5px;
+}
+
+.social-icons a {
+    text-decoration: none;
+    color: linen;
+    padding-left: 5px;
+  }

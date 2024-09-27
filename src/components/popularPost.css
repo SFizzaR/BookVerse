@@ -1,0 +1,55 @@
+.posts-cards {
+    display: flex;
+    gap: 20px;
+    overflow-x: auto; /* Allow horizontal scrolling if too many posts */
+}
+.Featured-posts{
+    background: linear-gradient(130deg, #1a1a1a, #4169e1, #3d007a, #5b2673, #8f3a73);
+    padding-bottom: 10px;
+}
+.Featured-posts h3{
+    color: white;
+    padding: 10px;
+    font-size: 30px;
+    text-align: center;
+}
+#postsCards {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center; /* Center the post cards horizontally */
+}
+.post-card:hover {
+    transform: scale(1.05); /* Enlarge the card slightly on hover */
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.2); /* Increase shadow for a more prominent effect */
+}
+.post-card {
+    background-color: #f9f9f9;
+    padding: 20px; /* Adjusted padding for better spacing */
+    width: 200px; /* Card width */
+    border-radius: 8px;
+    text-align: center;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+    margin: 10px; /* Space between cards */
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Center content horizontally */
+    justify-content: center; /* Center content vertically */
+}
+
+.post-card img {
+    max-width: 100%; /* Ensure image fits the card width */
+    height: auto; /* Maintain image aspect ratio */
+    border-radius: 5px; /* Rounded corners for the image */
+    margin-bottom: 10px; /* Space between image and text */
+    display: block; /* Ensures image is a block-level element */
+}
+
+.post-card h4 {
+    margin: 10px 0; /* Space around the heading */
+    font-size: 18px; /* Font size for the title */
+}
+
+.post-card p {
+    font-size: 14px; /* Font size for the summary */
+    color: #555; /* Lighter color for summary text */
+}

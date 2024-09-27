@@ -1,0 +1,51 @@
+/* Style for the book list to create horizontal scrolling */
+.book-list {
+    display: flex;
+    align-items: center;
+    justify-content: center; /* Center items horizontally */
+    gap: 20px; /* Space between books */
+    overflow-x: auto; /* Allow horizontal scrolling */
+    scroll-behavior: smooth; /* Smooth scrolling effect */
+    white-space: nowrap; /* Prevent items from wrapping to a new line */
+    padding: 20px;
+    padding-top: 30px;
+    margin: 20px 0;
+    background: linear-gradient(130deg, #1a1a1a, #4169e1, #3d007a, #5b2673, #8f3a73);
+}
+
+/* Hide the default scrollbar */
+.book-list::-webkit-scrollbar {
+    display: none; /* Hide scrollbar for WebKit browsers */
+}
+
+.book-list {
+    -ms-overflow-style: none; /* Hide scrollbar for Internet Explorer and Edge */
+    scrollbar-width: none; /* Hide scrollbar for Firefox */
+}
+
+/* Individual book item */
+.book {
+    display: inline-block;
+    text-align: center;
+    margin: 0 10px; /* This can be adjusted to control spacing */
+    transition: transform 0.3s ease-in-out;
+}
+
+.book img {
+    max-width: 150px;
+    height: 250px;
+    object-fit: cover;
+    transition: transform 0.3s ease-in-out;
+}
+
+/* Enlarge the book on hover */
+.book:hover {
+    transform: scale(1.1);
+}
+
+.book p {
+    margin-top: 10px;
+    font-size: 18px;
+    color: whitesmoke;
+    font-family: 'Cookies', serif;
+}
