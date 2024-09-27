@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Cookie&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@1,500&display=swap');
 * {
     margin: 0;
     padding: 0;
@@ -6,6 +8,24 @@
 body{
     background-color: #000000;
 }
+.input-container {
+    margin-bottom: 20px;
+  }
+  
+.username, .email, .password{
+    display: block; /* This ensures each element is on a new line */
+    font-size: 20px;
+    margin: 10px 0;
+    width: 100%; /* Optional: Makes the input fields take the full width */
+  }
+.submit{
+    display: block; /* This ensures each element is on a new line */
+    font-size: 20px;
+    margin: 10px 0;
+    width: 100%;
+    background: linear-gradient(145deg, #6200ea, #7a288a, #452064);
+}
+  
 .start-page {
     position: relative;
     min-height: 100vh;
@@ -29,10 +49,6 @@ body{
     padding: 0;
     animation-duration: 1.5s;
     animation-fill-mode: both;
-}
-
-
-.image-center {
     bottom: 0;
     left: 0%; /* Center the image horizontally */
     transform: translateX(-50%); /* Ensures the image stays centered */
