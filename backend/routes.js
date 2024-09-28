@@ -175,5 +175,59 @@ router.put('/profile', authenticateToken, async (req, res) => {
     }
 });
 
+// Searching for books
+router.get('/search-books', async (req, res) => {
+  const { title = '', author = '', genre = '', minRating = 0 } = req.query;
+
+  // Check for at least one parameter
+  if (!title && !author && !genre && minRating < 0) {
+      return res.status(400).send('Please provide at least one search criteria');
+  }
+
+  let connection;
+  try {
+      connection = await connectToDatabase();
+      let query = `
+          SELECT b.book_title, b.genre, a.author_name, b.ratings 
+          FROM books b 
+          JOIN authors a ON b.author_id = a.author_id 
+          WHERE 1=1`;
+
+      const queryParams = {};
+      if (title) {
+          query += ` AND b.book_title LIKE :title`;
+          queryParams.title = `%${title}%`;
+      }
+      if (author) {
+          query += ` AND LOWER(a.author_name) LIKE LOWER(:author)`; // Case-insensitive search
+          queryParams.author = `%${author}%`;
+      }
+      if (genre) {
+          query += ` AND b.genre LIKE :genre`;
+          queryParams.genre = `%${genre}%`;
+      }
+      if (minRating >= 0) { 
+          query += ` AND b.ratings >= :minRating`;
+          queryParams.minRating = parseFloat(minRating);
+      }
+
+      console.log('Query:', query);
+      console.log('Parameters:', queryParams);
+
+      const results = await connection.execute(query, queryParams);
+
+      console.log('Results:', results); // Log the results
+
+      if (results.rows.length === 0) {
+          return res.status(404).send('No books found with the given criteria');
+      }
+      res.status(200).json({ totalBooks: results.rows.length, books: results.rows });
+  } catch (err) {
+      console.error('Error searching for books:', err);
+      res.status(500).json({ error: 'Failed to fetch books' });
+  }
+});
+
+
 
 module.exports = router;
