@@ -9,6 +9,7 @@ import FeaturedBooks from './components/featuredBooks';
 import FeaturedPosts from './components/popularPost';
 import { books2024, summerbooks, classics } from './data/books';
 import { FaFacebookF, FaInstagram, FaPhoneAlt, FaEnvelope } from 'react-icons/fa';
+import axios from 'axios';
 
 function App() {
   const [isModalOpen, setModalOpen] = useState(false);
@@ -18,15 +19,19 @@ function App() {
   const [password, setPassword] = useState(''); // State to track the password
   const [errorMessage, setErrorMessage] = useState(''); // State to show error messages
 
+  const [role, setRole] = useState('');
+
   const openModalForReaders = () => {
     setIsAuthor(false);
     setSignUpMode(false); // Default to Sign In mode
+    setRole('reader'); // Set role to reader
     setModalOpen(true);
   };
 
   const openModalForAuthors = () => {
     setIsAuthor(true);
     setSignUpMode(false); // Default to Sign In mode
+    setRole('author'); // Set role to author
     setModalOpen(true);
   };
 
@@ -38,17 +43,44 @@ function App() {
   const handlePasswordChange = (e) => {
     setPassword(e.target.value);
   };
+  const [email, setEmail] = useState(''); // State to track the email
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (password.length < 8) {
+const handleEmailChange = (e) => {
+    setEmail(e.target.value);
+};
+
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  if (password.length < 8) {
       setErrorMessage('Password must be at least 8 characters long.');
       return;
-    }
-    // Perform the form submission logic here
-    console.log('Form submitted successfully');
-    setErrorMessage(''); // Clear error message on successful submission
-  };
+  }
+  
+  try {
+      const apiUrl = isSignUpMode ? 'http://localhost:8002/signup' : 'http://localhost:8002/login';
+      
+      const payload = {
+          username,
+          password,
+          role,
+      };
+
+      // Include email only for signup
+      if (isSignUpMode) {
+          payload.email = email;
+      }
+
+      const response = await axios.post(apiUrl, payload);
+      const { token } = response.data;
+      localStorage.setItem('jwtToken', token);
+      console.log('Login/Signup successful:', response.data);
+      setErrorMessage(''); 
+  } catch (error) {
+      console.error('Error:', error.response ? error.response.data : error.message);
+      setErrorMessage('An error occurred. Please try again.');
+  }
+};
+
 
   return (
     <div>
@@ -56,6 +88,8 @@ function App() {
         <a href="#">Blog</a>
         <a href="#" onClick={openModalForReaders}>For Readers</a>
         <a href="#" onClick={openModalForAuthors}>For Authors</a>
+        <a href="#">Learn React</a> {/* Add this line */}
+      
       </nav>
 
       <div className="start-page">
@@ -92,7 +126,13 @@ function App() {
 
           {isSignUpMode && (
             <div className="input-container">
-              <input type="email" placeholder="Email" className="email" required />
+              <input 
+              type="email" 
+              placeholder="Email" 
+              className="email" 
+              value={email}
+              onChange={handleEmailChange} 
+             required />
             </div>
           )}
 
