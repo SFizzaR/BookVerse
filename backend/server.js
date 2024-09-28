@@ -1,10 +1,12 @@
 const express = require('express');
 const dotenv = require('dotenv');
 const routes = require('./routes');
+const cors = require('cors');
 
 dotenv.config();
 
 const app = express();
+app.use(cors());
 const port = process.env.PORT;
 // Middleware for form data
 app.use(express.urlencoded({ extended: true }));
