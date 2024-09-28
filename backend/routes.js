@@ -39,7 +39,6 @@ router.post('/signup', async (req, res) => {
         
         // Hash the password
         const hashedPassword = await bcrypt.hash(password, 10);
-       // console.log('Hashed password:', hashedPassword);  // Add this line to log the hash
 
         // Insert user into the Users table
         await connection.execute(
@@ -55,51 +54,57 @@ router.post('/signup', async (req, res) => {
     }
 });
 
-
 // Login route
 router.post('/login', async (req, res) => {
-    const { email, password } = req.body;
-
+    const { username, password } = req.body;
+    let connection;
+  
     try {
-        const connection = await connectToDatabase();
-
-        // Explicitly select only the columns needed: user_id, email, hashed password, role
-        const result = await connection.execute(
-            `SELECT user_id, email, password, role FROM Users WHERE email = :email`,
-            { email }
-        );
-
-        if (result.rows.length === 0) {
-            return res.status(400).send('User not found');
+      connection = await connectToDatabase();
+  
+      // Execute SQL query to find the user by username
+      const result = await connection.execute(
+        `SELECT * FROM USERS WHERE USERNAME = :username`,
+        [username]
+      );
+  
+      // Check if user exists
+      if (result.rows.length === 0) {
+        return res.status(400).json({ error: 'User not found' });
+      }
+  
+      // Assuming your user data is in the first row
+      const user = result.rows[0];
+  
+      // Access the hashed password correctly
+      const hashedPassword = user[3]; // Get the hashed password
+  
+      // Compare passwords
+      const isPasswordValid = await bcrypt.compare(password, hashedPassword);
+  
+      if (!isPasswordValid) {
+        return res.status(400).json({ error: 'Invalid password' });
+      }
+  
+      // Create JWT token using user_id
+      const token = jwt.sign({ id: user.user_id, role: user.ROLE}, 'your_jwt_secret', { expiresIn: '1h' });
+  
+      // Send success response
+      res.status(200).json({ message: 'Login successful', token, role: user.ROLE});
+    } catch (error) {
+      console.error('Error logging in:', error);
+      res.status(500).json({ error: 'An error occurred. Please try again.' });
+    } finally {
+      // Close the database connection if it exists
+      if (connection) {
+        try {
+          await connection.close();
+        } catch (err) {
+          console.error('Error closing connection', err);
         }
-
-        const user = result.rows[0];  // This should now have the correct structure: [user_id, email, hashed_password, role]
-
-       /* console.log('Rows fetched from the database:', result.rows);
-        console.log('Entered password:', password);
-        console.log('Stored hashed password:', user[2]);
-
-        // Manual comparison for debugging
-        const isMatch = await bcrypt.compare('zahab123', user[2]); 
-        console.log('Manual comparison result:', isMatch);
-
-        const match = await bcrypt.compare(password, user[2]);
-        console.log('Password match:', match);
-        */
-        const match = await bcrypt.compare(password, user[2]);
-
-        if (!match) {
-            return res.status(400).send('Invalid credentials');
-        }
-
-        // Generate JWT token
-        const token = jwt.sign({ id: user[0], role: user[3] }, process.env.JWT_SECRET, { expiresIn: '1h' });
-        res.status(200).json({ token });
-    } catch (err) {
-        console.error('Error logging in:', err);
-        res.status(500).send('Error logging in');
+      }
     }
-});
+  });  
 
 // Middleware to authenticate user
 const authenticateToken = (req, res, next) => {
