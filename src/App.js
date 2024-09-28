@@ -10,11 +10,13 @@ import FeaturedPosts from './components/popularPost';
 import { books2024, summerbooks, classics } from './data/books';
 import { FaFacebookF, FaInstagram, FaPhoneAlt, FaEnvelope } from 'react-icons/fa';
 
-
 function App() {
   const [isModalOpen, setModalOpen] = useState(false);
   const [isSignUpMode, setSignUpMode] = useState(false); // Sign In is default
   const [isAuthor, setIsAuthor] = useState(false); // To determine if it's for authors
+  const [username, setUsername] = useState(''); // State to track the username
+  const [password, setPassword] = useState(''); // State to track the password
+  const [errorMessage, setErrorMessage] = useState(''); // State to show error messages
 
   const openModalForReaders = () => {
     setIsAuthor(false);
@@ -26,6 +28,26 @@ function App() {
     setIsAuthor(true);
     setSignUpMode(false); // Default to Sign In mode
     setModalOpen(true);
+  };
+
+  const handleUsernameChange = (e) => {
+    const inputValue = e.target.value.replace(/\s/g, ''); // Remove spaces from input
+    setUsername(inputValue);
+  };
+
+  const handlePasswordChange = (e) => {
+    setPassword(e.target.value);
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (password.length < 8) {
+      setErrorMessage('Password must be at least 8 characters long.');
+      return;
+    }
+    // Perform the form submission logic here
+    console.log('Form submitted successfully');
+    setErrorMessage(''); // Clear error message on successful submission
   };
 
   return (
@@ -56,41 +78,57 @@ function App() {
 
       {/* Sign In / Sign Up Modal */}
       <Modal isOpen={isModalOpen} closeModal={() => setModalOpen(false)} title={isAuthor ? "For Authors" : "For Readers"}>
-  <form>
-    <div className="input-container">
-      <input type="text" placeholder="Username" className="username" />
-    </div>
+        <form onSubmit={handleSubmit}>
+          <div className="input-container">
+            <input
+              type="text"
+              placeholder="Username"
+              className="username"
+              value={username}
+              onChange={handleUsernameChange}
+              required
+            />
+          </div>
 
-    {isSignUpMode && (
-      <div className="input-container">
-        <input type="email" placeholder="Email" className="email" />
-      </div>
-    )}
+          {isSignUpMode && (
+            <div className="input-container">
+              <input type="email" placeholder="Email" className="email" required />
+            </div>
+          )}
 
-    <div className="input-container">
-      <input type="password" placeholder="Password" className="password" />
-    </div>
+          <div className="input-container">
+            <input
+              type="password"
+              placeholder="Password"
+              className="password"
+              value={password}
+              onChange={handlePasswordChange}
+              minLength={8} // HTML validation for password length
+              required
+            />
+          </div>
 
-    <div className="input-container">
-      <button type="submit" class="submit">{isSignUpMode ? "Sign Up" : "Sign In"}</button>
-    </div>
+          {errorMessage && <p className="error">{errorMessage}</p>} {/* Display error message */}
 
-    <p>
-      {isSignUpMode ? (
-        <>
-          Already have an account?{' '}
-          <a href="#" onClick={() => setSignUpMode(false)}>Sign In</a>
-        </>
-      ) : (
-        <>
-          Don't have an account?{' '}
-          <a href="#" onClick={() => setSignUpMode(true)}>Sign Up</a>
-        </>
-      )}
-    </p>
-  </form>
-</Modal>
+          <div className="input-container">
+            <button type="submit" className="submit">{isSignUpMode ? "Sign Up" : "Sign In"}</button>
+          </div>
 
+          <p>
+            {isSignUpMode ? (
+              <>
+                Already have an account?{' '}
+                <a href="#" onClick={() => setSignUpMode(false)}>Sign In</a>
+              </>
+            ) : (
+              <>
+                Don't have an account?{' '}
+                <a href="#" onClick={() => setSignUpMode(true)}>Sign Up</a>
+              </>
+            )}
+          </p>
+        </form>
+      </Modal>
     </div>
   );
 }
@@ -99,7 +137,7 @@ function Newsletter() {
   return (
     <div className="newsletter">
       <h4>Sign up to our newsletter</h4>
-      <input type="text" placeholder="Enter your email" />
+      <input type="text" placeholder="Enter your email" required />
       <div className="button">
         <button className="Subscribe">Subscribe</button>
       </div>
