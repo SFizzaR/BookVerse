@@ -10,6 +10,7 @@ import FeaturedPosts from './components/popularPost';
 import { books2024, summerbooks, classics } from './data/books';
 import { FaFacebookF, FaInstagram, FaPhoneAlt, FaEnvelope } from 'react-icons/fa';
 import axios from 'axios';
+import { BrowserRouter as Router, Routes, Route, useNavigate } from 'react-router-dom'; // Import Router and Routes
 
 function App() {
   const [isModalOpen, setModalOpen] = useState(false);
@@ -18,8 +19,10 @@ function App() {
   const [username, setUsername] = useState(''); // State to track the username
   const [password, setPassword] = useState(''); // State to track the password
   const [errorMessage, setErrorMessage] = useState(''); // State to show error messages
-
   const [role, setRole] = useState('');
+  const [email, setEmail] = useState(''); // State to track the email
+
+  const navigate = useNavigate(); // Hook to navigate programmatically
 
   const openModalForReaders = () => {
     setIsAuthor(false);
@@ -43,44 +46,50 @@ function App() {
   const handlePasswordChange = (e) => {
     setPassword(e.target.value);
   };
-  const [email, setEmail] = useState(''); // State to track the email
 
-const handleEmailChange = (e) => {
+  const handleEmailChange = (e) => {
     setEmail(e.target.value);
-};
+  };
 
-const handleSubmit = async (e) => {
-  e.preventDefault();
-  if (password.length < 8) {
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (password.length < 8) {
       setErrorMessage('Password must be at least 8 characters long.');
       return;
-  }
-  
-  try {
+    }
+
+    try {
       const apiUrl = isSignUpMode ? 'http://localhost:8002/signup' : 'http://localhost:8002/login';
-      
+
       const payload = {
-          username,
-          password,
-          role,
+        username,
+        password,
+        role,
       };
 
       // Include email only for signup
       if (isSignUpMode) {
-          payload.email = email;
+        payload.email = email;
       }
 
       const response = await axios.post(apiUrl, payload);
       const { token } = response.data;
       localStorage.setItem('jwtToken', token);
       console.log('Login/Signup successful:', response.data);
-      setErrorMessage(''); 
-  } catch (error) {
+      setErrorMessage('');
+
+      // Redirect after successful signup or login
+      if (role === 'reader') {
+        navigate('/Reader'); // Redirect to reader.js equivalent page
+      } //else if (role === 'author') {
+       // navigate('/author'); // Redirect to author.js equivalent page
+      //}
+
+    } catch (error) {
       console.error('Error:', error.response ? error.response.data : error.message);
       setErrorMessage('An error occurred. Please try again.');
-  }
-};
-
+    }
+  };
 
   return (
     <div>
@@ -89,7 +98,6 @@ const handleSubmit = async (e) => {
         <a href="#" onClick={openModalForReaders}>For Readers</a>
         <a href="#" onClick={openModalForAuthors}>For Authors</a>
         <a href="#">Learn React</a> {/* Add this line */}
-      
       </nav>
 
       <div className="start-page">
@@ -126,13 +134,14 @@ const handleSubmit = async (e) => {
 
           {isSignUpMode && (
             <div className="input-container">
-              <input 
-              type="email" 
-              placeholder="Email" 
-              className="email" 
-              value={email}
-              onChange={handleEmailChange} 
-             required />
+              <input
+                type="email"
+                placeholder="Email"
+                className="email"
+                value={email}
+                onChange={handleEmailChange}
+                required
+              />
             </div>
           )}
 
@@ -143,7 +152,7 @@ const handleSubmit = async (e) => {
               className="password"
               value={password}
               onChange={handlePasswordChange}
-              minLength={8} // HTML validation for password length
+              minLength={8}
               required
             />
           </div>
@@ -171,6 +180,14 @@ const handleSubmit = async (e) => {
       </Modal>
     </div>
   );
+}
+
+function ReaderPage() {
+  return <h1>Welcome to the Reader Page!</h1>; // Your reader.js logic
+}
+
+function AuthorPage() {
+  return <h1>Welcome to the Author Page!</h1>; // Your author.js logic
 }
 
 function Newsletter() {
@@ -204,4 +221,14 @@ function SocialIcons() {
   );
 }
 
-export default App;
+export default function MainApp() {
+  return (
+    <Router>
+      <Routes>
+        <Route path="/" element={<App />} />
+        <Route path="/reader" element={<ReaderPage />} /> {/* Reader Page Route */}
+        <Route path="/author" element={<AuthorPage />} /> {/* Author Page Route */}
+      </Routes>
+    </Router>
+  );
+}
