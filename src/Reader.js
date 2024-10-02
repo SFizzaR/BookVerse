@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import "./reader.css";
+import "./DB_Project\Frontend\src\reader.css";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUserFriends, faCalendarAlt, faPencilAlt } from '@fortawesome/free-solid-svg-icons';
 
