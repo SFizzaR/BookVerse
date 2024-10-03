@@ -1,5 +1,11 @@
 @import url('https://fonts.googleapis.com/css2?family=Cookie&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@1,500&display=swap');
+@font-face{
+    font-family: 'Hunters';
+    src: url('./hunters/Hunters.otf') format('opentype');
+    font-weight: normal;
+    font-style: normal;
+};
 * {
     margin: 0;
     padding: 0;
@@ -28,8 +34,7 @@ body{
   
 .start-page {
     position: relative;
-    min-height: 100vh;
-    background: linear-gradient(130deg, #1a1a1a, #4169e1, #3d007a, #5b2673, #8f3a73);
+  min-height: 100vh;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -96,11 +101,12 @@ body{
 
 .book-cafe {
     transform: translateY(-96px); /* Adjust the value to move it up */
-    font-family: 'Playfair Display';
-    font-size: 90px;
-    color: whitesmoke;
+    font-size: 150px;
+    font-weight: bolder;
+    color: #e7630c;
     display: block;
     width: fit-content;
+    font-family: 'Hunters', sans-serif;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
 }
 
@@ -126,7 +132,7 @@ body{
     /* Gradient for 3D effect */
     border: none; /* Removes the border */
     border-radius: 20px;
-    font-family: 'Cookie', cursive; /* Corrected font family name */
+    font-family: 'Hunters', sans-serif; /* Corrected font family name */
     color: #fff;
     margin: 0; /* Remove extra margin */
     font-size: 27px;
@@ -145,9 +151,11 @@ body{
     width: 100%;
     background-color: #7777aa; /* Semi-transparent background */
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Add a slight shadow for better visibility */
-    padding: 10px 0;
+    padding: 0; /* Remove padding to make the height exact */
     z-index: 1000; /* Ensures the navbar stays above other elements */
-    text-align: center;
+    display: flex;
+    justify-content: center;
+    height: 80px; /* Set a specific height for the navbar */
 }
 
 #navbar a {
@@ -155,7 +163,10 @@ body{
     font-family: 'Cookies', serif;
     margin-left: 20px;
     color: #FFF0D9;
+    padding-top: 10px; /* Move links closer to the top */
+    align-self: flex-start; /* Aligns links to the top of the navbar */
 }
+
 #navbar a:hover {
     color: #ffffff; /* Brighten text on hover */
     text-shadow: 1px 1px 3px rgba(255, 255, 255, 0.7); /* Subtle glow */
@@ -171,14 +182,16 @@ body{
     display: flex;
     flex-direction: column; /* Stack items vertically */
     align-items: center; /* Center items horizontally */
-    background: linear-gradient(130deg, #1a1a1a, #4169e1, #3d007a, #5b2673, #8f3a73);
+    background: linear-gradient(130deg, #0d0d0d, #1a1a1a, #1e3a8a, #26448b, #2f3075);
+
     background-attachment: fixed;
   
 }
 
 .newsletter h4 {
+    font-family: 'Hunters', sans-serif;
     color: white;
-    font-size: 24px;
+    font-size: 50px;
     margin-bottom: 20px;
     padding: 10px;
 }
@@ -209,3 +222,42 @@ body{
     color: linen;
     padding-left: 5px;
   }
+ 
+
+  .search-bar {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end; /* Align contents to the right */
+    position: absolute; /* Allow precise placement */
+    top: 0; /* Move to the top */
+    right: 0; /* Align to the right */
+    margin: 20px; /* Optional: Add margin to create space from the edges */
+    z-index: 10; /* Ensure it stays on top of other content */
+}
+
+.search-bar input {
+    border-radius: 10px;
+    font-size: 15px;
+    width: 300px;
+    height: 30px;
+    border: none;
+    box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.3), -5px -5px 10px rgba(255, 255, 255, 0.1);
+    margin-right: 5px;
+}
+
+.search-bar button {
+    background: linear-gradient(145deg, #6200ea, #7a288a, #452064);
+    border: none;
+    border-radius: 20px;
+    font-family: 'Hunters', sans-serif;
+    color: #fff;
+    padding: 5px 10px;
+    box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.3), -5px -5px 10px rgba(255, 255, 255, 0.1);
+    transition: box-shadow 0.3s ease;
+    cursor: pointer;
+    font-size: 15px;
+}
+
+.search-bar button:hover {
+    box-shadow: inset 5px 5px 10px rgba(0, 0, 0, 0.3), inset -5px -5px 10px rgba(255, 255, 255, 0.1);
+}
