@@ -170,12 +170,12 @@ function App() {
             {isSignUpMode ? (
               <>
                 Already have an account?{' '}
-                <a href="#" onClick={() => setSignUpMode(false)}>Sign In</a>
+                <a className='sign' href="#" onClick={() => setSignUpMode(false)}>Sign In</a>
               </>
             ) : (
               <>
                 Don't have an account?{' '}
-                <a href="#" onClick={() => setSignUpMode(true)}>Sign Up</a>
+                <a className='sign' href="#" onClick={() => setSignUpMode(true)}>Sign Up</a>
               </>
             )}
           </p>
