@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import './styles.css'; 
 import Modal from './components/modal'; // Import the modal component
 import Sparkle from 'react-sparkle';
-import bookimage from './book.png';
+import bookimage from './pic.jpg';
 import Quote from './components/quotes';
 import Section from './components/section';
 import FeaturedBooks from './components/featuredBooks';
@@ -97,7 +97,10 @@ function App() {
         <a href="#">Blog</a>
         <a href="#" onClick={openModalForReaders}>For Readers</a>
         <a href="#" onClick={openModalForAuthors}>For Authors</a>
-        <a href="#">Learn React</a> {/* Add this line */}
+        <div className="search-bar">
+          <input type="text" placeholder=" Search by title, author, or keyword..." />
+          <button type="submit">Search</button>
+        </div>
       </nav>
 
       <div className="start-page">
