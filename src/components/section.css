@@ -10,9 +10,12 @@
     padding: 20px;
     padding-top: 30px;
     margin: 20px 0;
-    background: linear-gradient(130deg, #1a1a1a, #4169e1, #3d007a, #5b2673, #8f3a73);
+    background: linear-gradient(130deg, #0d0d0d, #1a1a1a, #1e3a8a, #26448b, #2f3075);
 }
-
+.description{
+    font-family: 'Hunters', sans-serif;
+    font-size: 50px;
+}
 /* Hide the default scrollbar */
 .book-list::-webkit-scrollbar {
     display: none; /* Hide scrollbar for WebKit browsers */
