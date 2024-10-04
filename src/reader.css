@@ -1,12 +1,9 @@
 @import url('https://fonts.googleapis.com/css2?family=Cookie&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@1,500&display=swap');
-* {
+.reader-page {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-}
-
-body {
     background: linear-gradient(130deg, #1a1a1a, #4169e1, #3d007a, #5b2673, #8f3a73);
     padding-top: 70px; /* Adds space for the fixed navbar */
     display: flex;
