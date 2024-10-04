@@ -21,6 +21,14 @@ function App() {
   const [errorMessage, setErrorMessage] = useState(''); // State to show error messages
   const [role, setRole] = useState('');
   const [email, setEmail] = useState(''); // State to track the email
+  const [author, setAuthor] = useState('');
+  const [title, setTitle] = useState('');
+  const [genre, setGenre] = useState('');
+  const [minRating, setMinRating] = useState(0);
+  const [searchTerm, setSearchTerm] = useState('');
+const [searchType, setSearchType] = useState('title'); // Default search type
+const [searchResults, setSearchResults] = useState([]);
+const ratingOptions = [0, 1, 2, 3, 4, 5]; // Possible rating options
 
   const navigate = useNavigate(); // Hook to navigate programmatically
 
@@ -59,7 +67,7 @@ function App() {
     }
 
     try {
-      const apiUrl = isSignUpMode ? 'http://localhost:8002/signup' : 'http://localhost:8002/login';
+      const apiUrl = isSignUpMode ? 'http://localhost:8002/home/signup' : 'http://localhost:8002/home/login';
 
       const payload = {
         username,
@@ -90,19 +98,60 @@ function App() {
       setErrorMessage('An error occurred. Please try again.');
     }
   };
+  const handleSearch = async () => {
+    try {
+        const queryParams = [];
 
-  return (
-    <div>
-      <nav id="navbar">
-        <a href="#">Blog</a>
-        <a href="#" onClick={openModalForReaders}>For Readers</a>
-        <a href="#" onClick={openModalForAuthors}>For Authors</a>
-        <div className="search-bar">
-          <input type="text" placeholder=" Search by title, author, or keyword..." />
-          <button type="submit">Search</button>
-        </div>
-      </nav>
+        // Check if the search type is ratings and add the searchTerm to minRating
+        if (searchType === 'ratings' && searchTerm) {
+            const ratingValue = parseFloat(searchTerm); // Parse as float
+            if (!isNaN(ratingValue) && ratingValue >= 0 && ratingValue <= 5) {
+                queryParams.push(`minRating=${encodeURIComponent(ratingValue)}`);
+            } else {
+                console.error('Rating must be a number between 0 and 5');
+                return; // Return early if the rating is invalid
+            }
+        } else if (searchTerm) {
+            if (searchType === 'title') {
+                queryParams.push(`title=${encodeURIComponent(searchTerm)}`);
+            } else if (searchType === 'author') {
+                queryParams.push(`author=${encodeURIComponent(searchTerm)}`);
+            } else if (searchType === 'genre') {
+                queryParams.push(`genre=${encodeURIComponent(searchTerm)}`);
+            }
+        }
 
+        const queryString = queryParams.length ? `?${queryParams.join('&')}` : '';
+        const response = await axios.get(`http://localhost:8002/home/search-books${queryString}`);
+        setSearchResults(response.data); 
+    } catch (error) {
+        console.error('Error fetching search results:', error);
+        setSearchResults([]);
+    }
+};
+
+return (
+  <div>
+  <nav id="navbar">
+      <a href="#">Blog</a>
+      <a href="#" onClick={openModalForReaders}>For Readers</a>
+      <a href="#" onClick={openModalForAuthors}>For Authors</a>
+      <div className="search-bar">
+          <select value={searchType} onChange={(e) => setSearchType(e.target.value)}>
+              <option value="title">Title</option>
+              <option value="author">Author</option>
+              <option value="genre">Genre</option>
+              <option value="ratings">Rating</option>
+              </select>
+          <input
+              type="text"
+              placeholder={`Search by ${searchType}...`}
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+          />
+          <button onClick={handleSearch}>Search</button>
+      </div>
+  </nav>
       <div className="start-page">
         <Sparkle count={30} color="yellow" fadeDuration={1000} />
         <img src={bookimage} className="image-center" alt="Background" />
@@ -110,17 +159,17 @@ function App() {
           <h1 className="book-cafe">Book Verse</h1>
         </div>
       </div>
-
+  
       <Section title="Top 5 Books of 2024" id="bookList2024" books={books2024} />
       <Section title="Top 5 Summer Reads" id="summerList" books={summerbooks} />
       <Section title="Top 5 Classical Reads" id="ClassicsList" books={classics} />
-
+  
       <FeaturedBooks />
       <FeaturedPosts />
       <Quote />
       <Newsletter />
       <SocialIcons />
-
+  
       {/* Sign In / Sign Up Modal */}
       <Modal isOpen={isModalOpen} closeModal={() => setModalOpen(false)} title={isAuthor ? "For Authors" : "For Readers"}>
         <form onSubmit={handleSubmit}>
@@ -134,7 +183,7 @@ function App() {
               required
             />
           </div>
-
+  
           {isSignUpMode && (
             <div className="input-container">
               <input
@@ -147,7 +196,7 @@ function App() {
               />
             </div>
           )}
-
+  
           <div className="input-container">
             <input
               type="password"
@@ -159,13 +208,13 @@ function App() {
               required
             />
           </div>
-
+  
           {errorMessage && <p className="error">{errorMessage}</p>} {/* Display error message */}
-
+  
           <div className="input-container">
             <button type="submit" className="submit">{isSignUpMode ? "Sign Up" : "Sign In"}</button>
           </div>
-
+  
           <p>
             {isSignUpMode ? (
               <>
@@ -182,7 +231,7 @@ function App() {
         </form>
       </Modal>
     </div>
-  );
+  );  
 }
 
 function ReaderPage() {
@@ -221,7 +270,9 @@ function SocialIcons() {
         <FaEnvelope />
       </a>
     </div>
+  
   );
+
 }
 
 export default function MainApp() {
