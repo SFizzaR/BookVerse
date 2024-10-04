@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import "./DB_Project\Frontend\src\reader.css";
+import "./reader.css";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUserFriends, faCalendarAlt, faPencilAlt } from '@fortawesome/free-solid-svg-icons';
 
@@ -75,7 +75,7 @@ export function Reader( ) {
   };
 
   return (
-    <div>
+    <div className="reader-page">
       <div id="navbar">
         <h2 id="title">Book Verse</h2>
         <div className="search-bar">
