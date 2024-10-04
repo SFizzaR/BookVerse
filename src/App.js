@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import ReaderPage from './Pages/Reader'
 import './styles.css'; 
 import Modal from './components/modal'; // Import the modal component
 import Sparkle from 'react-sparkle';
@@ -89,9 +90,9 @@ const ratingOptions = [0, 1, 2, 3, 4, 5]; // Possible rating options
       // Redirect after successful signup or login
       if (role === 'reader') {
         navigate('/Reader'); // Redirect to reader.js equivalent page
-      } //else if (role === 'author') {
-       // navigate('/author'); // Redirect to author.js equivalent page
-      //}
+      } else if (role === 'author') {
+       navigate('/author'); // Redirect to author.js equivalent page
+      }
 
     } catch (error) {
       console.error('Error:', error.response ? error.response.data : error.message);
@@ -131,7 +132,7 @@ const ratingOptions = [0, 1, 2, 3, 4, 5]; // Possible rating options
 };
 
 return (
-  <div>
+  <div className='homepage'>
   <nav id="navbar">
       <a href="#">Blog</a>
       <a href="#" onClick={openModalForReaders}>For Readers</a>
@@ -234,9 +235,6 @@ return (
   );  
 }
 
-function ReaderPage() {
-  return <h1>Welcome to the Reader Page!</h1>; // Your reader.js logic
-}
 
 function AuthorPage() {
   return <h1>Welcome to the Author Page!</h1>; // Your author.js logic
@@ -278,11 +276,12 @@ function SocialIcons() {
 export default function MainApp() {
   return (
     <Router>
-      <Routes>
-        <Route path="/" element={<App />} />
-        <Route path="/reader" element={<ReaderPage />} /> {/* Reader Page Route */}
-        <Route path="/author" element={<AuthorPage />} /> {/* Author Page Route */}
-      </Routes>
-    </Router>
+  <Routes>
+    <Route path="/" element={<App />} />
+    <Route path="/reader" element={<ReaderPage />} /> {/* Ensure this path and component exist */}
+    <Route path="/author" element={<AuthorPage />} /> 
+  </Routes>
+</Router>
+
   );
 }
