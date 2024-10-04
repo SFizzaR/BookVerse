@@ -6,12 +6,10 @@
     font-weight: normal;
     font-style: normal;
 };
-* {
+.homepage{
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-}
-body{
     background-color: #000000;
 }
 .input-container {
@@ -255,7 +253,7 @@ body{
     box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.3), -5px -5px 10px rgba(255, 255, 255, 0.1);
     transition: box-shadow 0.3s ease;
     cursor: pointer;
-    font-size: 15px;
+    font-size: 20px;
 }
 
 .search-bar button:hover {
@@ -269,4 +267,11 @@ body{
 
 .sign:hover{
     color: #452064;
+}
+
+.search-bar select{
+    margin-right: 14px;
+    font-size: 15px;
+    height: 30px;
+    border-radius: 10px;
 }
