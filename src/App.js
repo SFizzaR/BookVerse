@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import ReaderPage from './Pages/Reader'
+import ReaderPage from './Reader'
 import './styles.css'; 
 import Modal from './components/modal'; // Import the modal component
 import Sparkle from 'react-sparkle';
