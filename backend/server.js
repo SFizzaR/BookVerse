@@ -4,6 +4,7 @@ const routes = require('./routes');
 const cors = require('cors');
 const homepageroutes=require('./homepageroutes');
 const authroutes=require('./authroutes');
+const readerRoutes=require('./readerRoutes');
 
 dotenv.config();
 
@@ -17,6 +18,7 @@ app.use(express.json());
 app.use('/', routes);
 app.use('/home',homepageroutes);
 app.use('/author',authroutes);
+app.use('/reader',readerRoutes);
 // Start the server
 app.listen(port, '0.0.0.0', () => {
 console.log(`Server is running on port ${port}`);
