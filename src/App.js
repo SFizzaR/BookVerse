@@ -62,43 +62,54 @@ const ratingOptions = [0, 1, 2, 3, 4, 5]; // Possible rating options
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
     if (password.length < 8) {
       setErrorMessage('Password must be at least 8 characters long.');
       return;
     }
-
+  
     try {
       const apiUrl = isSignUpMode ? 'http://localhost:8002/home/signup' : 'http://localhost:8002/home/login';
-
+  
       const payload = {
         username,
         password,
         role,
       };
-
-      // Include email only for signup
+  
       if (isSignUpMode) {
         payload.email = email;
       }
-
+  
       const response = await axios.post(apiUrl, payload);
+  
+      // Log full response for debugging
+      console.log('API Response:', response);
+  
+      // Check if the response data contains the token
       const { token } = response.data;
+      if (!token) {
+        throw new Error("Token not received from server");
+      }
+  
       localStorage.setItem('jwtToken', token);
       console.log('Login/Signup successful:', response.data);
       setErrorMessage('');
-
+  
       // Redirect after successful signup or login
       if (role === 'reader') {
-        navigate('/Reader'); // Redirect to reader.js equivalent page
-      } else if (role === 'author') {
-       navigate('/author'); // Redirect to author.js equivalent page
-      }
+        navigate('/reader'); // Correct way to navigate to ReaderPage
 
+      } else if (role === 'author') {
+        navigate('/author'); // Redirect to author.js equivalent page
+      }
+  
     } catch (error) {
       console.error('Error:', error.response ? error.response.data : error.message);
       setErrorMessage('An error occurred. Please try again.');
     }
   };
+  
   const handleSearch = async () => {
     try {
         const queryParams = [];
@@ -173,6 +184,7 @@ return (
   
       {/* Sign In / Sign Up Modal */}
       <Modal isOpen={isModalOpen} closeModal={() => setModalOpen(false)} title={isAuthor ? "For Authors" : "For Readers"}>
+
         <form onSubmit={handleSubmit}>
           <div className="input-container">
             <input
