@@ -2,6 +2,9 @@ import React, { useState, useEffect } from "react";
 import "./reader.css";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUserFriends, faCalendarAlt, faPencilAlt } from '@fortawesome/free-solid-svg-icons';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
+
 
 export function Reader( ) {
   const [profilePic, setProfilePic] = useState("https://via.placeholder.com/150");
@@ -30,6 +33,7 @@ export function Reader( ) {
       image: "https://m.media-amazon.com/images/I/51ZvZFJOsrL._AC_UF1000,1000_QL80_.jpg",
     },
   ];
+  const navigate = useNavigate(); // Initialize navigate
 
   const currentReads = [
     {
@@ -74,6 +78,26 @@ export function Reader( ) {
     setModalVisible(!modalVisible);
   };
 
+  
+  // Define handleLogout function
+  const handleLogout = async () => {
+    try {
+      const response = await axios.post("http://localhost:8002/reader/logout", {}, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`
+        }
+      });
+      if (response.status === 200) {
+        console.log("Logout successful:", response.data);
+        localStorage.removeItem('token'); // Clear token from storage
+        navigate('/#'); // Redirect to login page after logout
+      }
+    } catch (error) {
+      console.error("Logout failed:", error);
+    }
+  };
+
+
   return (
     <div className="reader-page">
       <div id="navbar">
@@ -97,7 +121,7 @@ export function Reader( ) {
         <h4 id="username">Fizzy</h4>
         <h5>Badges</h5>
         <button className="edit-profile-button">Edit Profile</button>
-        <button className="logout-button">Log Out</button>
+        <button className="logout-button" onClick={handleLogout}>Log Out</button> {/* Call handleLogout on click */}
       </div>
 
       <div className="content-wrapper">
