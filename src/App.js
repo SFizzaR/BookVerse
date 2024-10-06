@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import ReaderPage from './Pages/Reader'
 import './styles.css'; 
 import Modal from './components/modal'; // Import the modal component
-import Sparkle from 'react-sparkle';
 import bookimage from './pic.jpg';
 import Quote from './components/quotes';
 import Section from './components/section';
@@ -169,7 +168,6 @@ return (
       </div>
   </nav>
       <div className="start-page">
-        <Sparkle count={30} color="yellow" fadeDuration={1000} />
         <img src={bookimage} className="image-center" alt="Background" />
         <div className="text-container">
           <h1 className="book-cafe">Book Verse</h1>
