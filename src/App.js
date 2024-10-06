@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import ReaderPage from './Pages/Reader'
+import ReaderPage from './Reader';
+import AuthorPage from './Author';
 import './styles.css'; 
 import Modal from './components/modal'; // Import the modal component
 import bookimage from './pic.jpg';
@@ -247,11 +248,6 @@ return (
       </Modal>
     </div>
   );  
-}
-
-
-function AuthorPage() {
-  return <h1>Welcome to the Author Page!</h1>; // Your author.js logic
 }
 
 function Newsletter() {
