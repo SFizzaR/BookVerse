@@ -83,7 +83,7 @@ const ratingOptions = [0, 1, 2, 3, 4, 5]; // Possible rating options
   
       const response = await axios.post(apiUrl, payload);
   
-      // Check if the response data contains the token
+      // Check if the response data contains the token (login case)
       const { token } = response.data;
       if (!token) {
         throw new Error("Token not received from server");
@@ -94,16 +94,24 @@ const ratingOptions = [0, 1, 2, 3, 4, 5]; // Possible rating options
   
       // Redirect after successful signup or login
       if (role === 'reader') {
-        navigate('/reader', { state: { username } }); // Pass username to ReaderPage
+        navigate('/reader', { state: { username } });
       } else if (role === 'author') {
-        navigate('/author', { state: { username } }); // Pass username to AuthorPage
+        navigate('/author', { state: { username } });
       }
   
     } catch (error) {
+      // Log the error message from the backend response
       console.error('Error:', error.response ? error.response.data : error.message);
-      setErrorMessage('An error occurred. Please try again.');
+  
+      // Check for specific error messages
+      if (error.response && error.response.data.error === 'User not found') {
+        setErrorMessage('User not found. Please sign up instead.');
+      } else {
+        setErrorMessage('An error occurred. Please try again.');
+      }
     }
   };
+  
   
   
   const handleSearch = async () => {
