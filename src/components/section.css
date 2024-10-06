@@ -5,7 +5,6 @@
     justify-content: center; /* Center items horizontally */
     gap: 20px; /* Space between books */
     overflow-x: auto; /* Allow horizontal scrolling */
-    scroll-behavior: smooth; /* Smooth scrolling effect */
     white-space: nowrap; /* Prevent items from wrapping to a new line */
     padding: 20px;
     padding-top: 30px;
@@ -15,10 +14,6 @@
 .description{
     font-family: 'Hunters', sans-serif;
     font-size: 50px;
-}
-/* Hide the default scrollbar */
-.book-list::-webkit-scrollbar {
-    display: none; /* Hide scrollbar for WebKit browsers */
 }
 
 .book-list {
