@@ -99,7 +99,8 @@ export function Reader( ) {
       image: "https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1539183359i/35398627.jpg",
     },
   ];
-
+let numtbr = tbr.length;
+let numcurrentReads = currentReads.length;
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -194,7 +195,7 @@ export function Reader( ) {
         <div className="current-reads">
         <div className="header-container">
     <h2 className="header">Current Reads</h2>
-    <h2 className="number">2</h2>
+    <h2 className="number">{numtbr}</h2>
   </div>
        
           <div id="current-read-list" >
@@ -212,7 +213,7 @@ export function Reader( ) {
          
           <div className="header-container">
     <h2 className="header">Current Reads</h2>
-    <h2 className="number">2</h2>
+    <h2 className="number">{numcurrentReads}</h2>
   </div>
         
          
