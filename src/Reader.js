@@ -1,15 +1,52 @@
 import React, { useState, useEffect } from "react";
 import "./reader.css";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faUserFriends, faCalendarAlt, faPencilAlt } from '@fortawesome/free-solid-svg-icons';
+import { faUserFriends, faCalendarAlt, faPencilAlt,faArrowLeft, faArrowRight } from '@fortawesome/free-solid-svg-icons';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
-
+import { useNavigate, useLocation } from 'react-router-dom';
 
 export function Reader( ) {
   const [profilePic, setProfilePic] = useState("https://via.placeholder.com/150");
   const [navbarProfilePic, setNavbarProfilePic] = useState("https://via.placeholder.com/40");
-  const [modalVisible, setModalVisible] = useState(false);
+  const [searchType, setSearchType] = useState('title');
+  const [searchTerm, setSearchTerm] = useState('');
+  const [searchResults, setSearchResults] = useState([]);
+  
+
+  const location = useLocation();  // Get the state from the navigate function
+  const username = location.state?.username;
+  
+  const handleSearch = async () => {
+    try {
+        const queryParams = [];
+
+        // Check if the search type is ratings and add the searchTerm to minRating
+        if (searchType === 'ratings' && searchTerm) {
+            const ratingValue = parseFloat(searchTerm); // Parse as float
+            if (!isNaN(ratingValue) && ratingValue >= 0 && ratingValue <= 5) {
+                queryParams.push(`minRating=${encodeURIComponent(ratingValue)}`);
+            } else {
+                console.error('Rating must be a number between 0 and 5');
+                return; // Return early if the rating is invalid
+            }
+        } else if (searchTerm) {
+            if (searchType === 'title') {
+                queryParams.push(`title=${encodeURIComponent(searchTerm)}`);
+            } else if (searchType === 'author') {
+                queryParams.push(`author=${encodeURIComponent(searchTerm)}`);
+            } else if (searchType === 'genre') {
+                queryParams.push(`genre=${encodeURIComponent(searchTerm)}`);
+            }
+        }
+
+        const queryString = queryParams.length ? `?${queryParams.join('&')}` : '';
+        const response = await axios.get(`http://localhost:8002/home/search-books${queryString}`);
+        setSearchResults(response.data); 
+    } catch (error) {
+        console.error('Error fetching search results:', error);
+        setSearchResults([]);
+    }
+};
 
   const books2024 = [
     {
@@ -33,6 +70,8 @@ export function Reader( ) {
       image: "https://m.media-amazon.com/images/I/51ZvZFJOsrL._AC_UF1000,1000_QL80_.jpg",
     },
   ];
+ 
+
   const navigate = useNavigate(); // Initialize navigate
 
   const currentReads = [
@@ -74,11 +113,7 @@ export function Reader( ) {
     }
   };
 
-  const toggleModal = () => {
-    setModalVisible(!modalVisible);
-  };
 
-  
   // Define handleLogout function
   const handleLogout = async () => {
     try {
@@ -100,17 +135,28 @@ export function Reader( ) {
 
   return (
     <div className="reader-page">
-      <div id="navbar">
+      <div id="reader-navbar">
         <h2 id="title">Book Verse</h2>
-        <div className="search-bar">
-          <input type="text" placeholder=" Search by title, author, or keyword..." />
-          <button type="submit">Search</button>
+        <div className="reader-search-bar">
+        <select value={searchType} onChange={(e) => setSearchType(e.target.value)}>
+              <option value="title">Title</option>
+              <option value="author">Author</option>
+              <option value="genre">Genre</option>
+              <option value="ratings">Rating</option>
+              </select>
+          <input
+              type="text"
+              placeholder={`Search by ${searchType}...`}
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+          />
+          <button onClick={handleSearch}>Search</button>
         </div>
         <FontAwesomeIcon icon={faUserFriends} className="icon-style" />
       <FontAwesomeIcon icon={faCalendarAlt} className="icon-style" />
       <FontAwesomeIcon icon={faPencilAlt} className="icon-style" />
         <a href="#">
-        <img src={navbarProfilePic} alt="Profile" className="profile-pic" id="profile-pic"/>
+        <img src={navbarProfilePic} alt="Profile" className="small-profile-pic" id="profile-pic"/>
         </a>
       </div>
 
@@ -118,14 +164,14 @@ export function Reader( ) {
         <h2>My Profile</h2>
         <img src={profilePic} alt="Profile" className="profile-pic" id="profile-pic" onClick={() => document.getElementById('file-input').click()} />
         <input type="file" id="file-input" accept="image/*" style={{ display: "none" }} onChange={handleFileChange} />
-        <h4 id="username">Fizzy</h4>
+        <h4 id="username">{username}</h4>
+        
         <h5>Badges</h5>
         <button className="edit-profile-button">Edit Profile</button>
         <button className="logout-button" onClick={handleLogout}>Log Out</button> {/* Call handleLogout on click */}
       </div>
 
       <div className="content-wrapper">
-        <button className="filter-button" id="filterBtn" onClick={toggleModal}>Show Filters</button>
         <div className="container">
           <div className="section">
           <p>Loading items...</p>
@@ -133,96 +179,56 @@ export function Reader( ) {
         </div>
 
         <div className="recommended-list">
+        <div className="header-container">
           <h2 className="header">Recommended Books</h2>
-          <div className="book-list" id="recommended-book-list">
+          </div>
+          <div id="recommended-book-list">
             {books2024.map((book) => (
-              <div className="book" key={book.id}>
+              <div className="books" key={book.id}>
                 <img src={book.image} alt={book.title} width="100" />
               </div>
             ))}
           </div>
-        </div>
+          </div>
 
         <div className="current-reads">
-          <h2 className="header">Current Reads</h2>
-          <h2 className="number">2</h2>
-        </div>
-          <div className="book-list" id="current-read-list">
+        <div className="header-container">
+    <h2 className="header">Current Reads</h2>
+    <h2 className="number">2</h2>
+  </div>
+       
+          <div id="current-read-list" >
             {currentReads.map((book) => (
-              <div className="book" key={book.id}>
+              <div className="books" key={book.id}>
                 <img src={book.image} alt={book.title} width="100" />
               </div>
             ))}
             <div className="add-more">+ Add More</div>
           </div>
-      
+          </div>
+       
 
         <div className="to-be-read">
-          <div className="tbr">
-            <h2 className="header">To Be Read</h2>
-            <h2 className="number">2</h2>
-          </div>
-          <div className="book-list" id="to-be-read-list">
+         
+          <div className="header-container">
+    <h2 className="header">Current Reads</h2>
+    <h2 className="number">2</h2>
+  </div>
+        
+         
+          <div id="to-be-read-list">
             {tbr.map((book) => (
-              <div className="book" key={book.id}>
+              <div className="books" key={book.id}>
                 <img src={book.image} alt={book.title} width="100" />
               </div>
             ))}
             <div className="add-more">+ Add More</div>
           </div>
+        
         </div>
       </div>
-
-      {modalVisible && (
-        <div id="filterModal" className="modal">
-          <div className="modal-content">
-            <span className="close" id="closeModal" onClick={toggleModal}>&times;</span>
-            <h3>Filters</h3>
-            <div className="filters">
-              <div className="filter-group">
-                <label htmlFor="genre">Genre:</label>
-                <select id="genre">
-                  <option value="">Select Genre</option>
-                  <option value="fiction">Fiction</option>
-                  <option value="fantasy">Fantasy</option>
-                  <option value="self-help">Self-Help</option>
-                  <option value="mystry/thriller">Mystry/Thriller</option>
-                  <option value="science-fiction">Science Fiction</option>
-                  <option value="non-fiction">Non-Fiction</option>
-                  <option value="horror">Horror</option>
-                  <option value="historical-fiction">Historical Fiction</option>
-                  <option value="young adult">Young Adult</option>
-                  <option value="children's-book">Children's Book</option>
-                </select>
-              </div>
-              <div className="filter-group">
-                <label htmlFor="age-range">Age Range:</label>
-                <select id="age-range">
-                  <option value="">Select Age Range</option>
-                  <option value="adult">Adult (18+)</option>
-                  <option value="young-adult">Young Adult (13-18)</option>
-                  <option value="middle-grade">Middle Grade (8-12)</option>
-                  <option value="children">Children's (4-7)</option>
-                  <option value="picture-books">Picture Books (0-3)</option>
-                </select>
-              </div>
-              <div className="filter-group">
-                <label htmlFor="rating">Rating:</label>
-                <select id="rating">
-                  <option value="">Select Rating</option>
-                  <option value="5">5 Stars</option>
-                  <option value="4">4 Stars</option>
-                  <option value="3">3 Stars</option>
-                  <option value="2">2 Stars</option>
-                  <option value="1">1 Star</option>
-                </select>
-              </div>
-            </div>
-            <button type="submit" id="Apply">Apply all</button>
-          </div>
-        </div>
-      )}
     </div>
+   
   );
 };
 
