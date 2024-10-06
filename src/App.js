@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import ReaderPage from './Reader'
+import ReaderPage from './Pages/Reader'
 import './styles.css'; 
 import Modal from './components/modal'; // Import the modal component
 import Sparkle from 'react-sparkle';
@@ -62,7 +62,7 @@ const ratingOptions = [0, 1, 2, 3, 4, 5]; // Possible rating options
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+  
     if (password.length < 8) {
       setErrorMessage('Password must be at least 8 characters long.');
       return;
@@ -83,9 +83,6 @@ const ratingOptions = [0, 1, 2, 3, 4, 5]; // Possible rating options
   
       const response = await axios.post(apiUrl, payload);
   
-      // Log full response for debugging
-      console.log('API Response:', response);
-  
       // Check if the response data contains the token
       const { token } = response.data;
       if (!token) {
@@ -93,15 +90,13 @@ const ratingOptions = [0, 1, 2, 3, 4, 5]; // Possible rating options
       }
   
       localStorage.setItem('jwtToken', token);
-      console.log('Login/Signup successful:', response.data);
       setErrorMessage('');
   
       // Redirect after successful signup or login
       if (role === 'reader') {
-        navigate('/reader'); // Correct way to navigate to ReaderPage
-
+        navigate('/reader', { state: { username } }); // Pass username to ReaderPage
       } else if (role === 'author') {
-        navigate('/author'); // Redirect to author.js equivalent page
+        navigate('/author', { state: { username } }); // Pass username to AuthorPage
       }
   
     } catch (error) {
@@ -109,6 +104,7 @@ const ratingOptions = [0, 1, 2, 3, 4, 5]; // Possible rating options
       setErrorMessage('An error occurred. Please try again.');
     }
   };
+  
   
   const handleSearch = async () => {
     try {
