@@ -145,7 +145,7 @@
     font-size: 24px;
 }
 
-.recommended-list, .current-reads {
+.recommended-list, .current-reads, .my-series, .My-books {
 margin-top: 20px; /* Add space between the button and the lists */
 }
 
@@ -187,7 +187,7 @@ box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2); /* Add subtle shadow for a hover ef
 transform: scale(1.02); /* Slight enlargement on hover */
 }
 
-#recommended-book-list, #current-read-list, #to-be-read-list {
+#recommended-book-list, #current-read-list, #to-be-read-list, #my-series-list, #my-book-list  {
     display: flex;
     align-items: start;
     justify-content: center; /* Center items horizontally */
