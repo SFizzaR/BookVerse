@@ -1,7 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Cookie&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@1,500&display=swap');
 
-.reader-page {
+.reader-page, .author-page, .search-page {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
@@ -14,7 +14,7 @@
     width: 100vw; /* Full width of the viewport */
 }
 
-#reader-navbar {
+#user-navbar {
     height: 80px;
     position: fixed;
     top: 0;
@@ -30,7 +30,7 @@
     padding-left: 5px;
 }
 
-#reader-navbar a {
+#user-navbar a {
     font-size: 20px;
     font-family: 'Cookies', serif;
     color: #FFF0D9;
@@ -38,12 +38,12 @@
     margin: 10px;
 }
 
-#reader-navbar a:hover {
+#user-navbar a:hover {
     color: #ffffff;
     text-shadow: 1px 1px 3px rgba(255, 255, 255, 0.7);
 }
 
-#reader-navbar a:visited {
+#user-navbar a:visited {
     color: #F6BC8C;
 }
 
@@ -54,13 +54,13 @@
     margin-left: auto;
 }
 
-.reader-search-bar {
+.user-search-bar {
     display: flex;
     align-items: center;
     margin-left: auto; /* Pushes the search bar to the right */
 }
 
-.reader-search-bar input {
+.user-search-bar input {
     border-radius: 10px;
     font-size: 15px;
     width: 300px;
@@ -70,7 +70,7 @@
     margin-right: 5px;
 }
 
-.reader-search-bar button {
+.user-search-bar button {
     background: linear-gradient(145deg, #6200ea, #7a288a, #452064);
     border: none;
     border-radius: 20px;
@@ -83,11 +83,11 @@
     font-size: 15px;
 }
 
-.reader-search-bar button:hover {
+.user-search-bar button:hover {
     box-shadow: inset 5px 5px 10px rgba(0, 0, 0, 0.3), inset -5px -5px 10px rgba(255, 255, 255, 0.1);
 }
 
-.reader-search-bar select{
+.user-search-bar select{
     margin-right: 14px;
     font-size: 15px;
     height: 30px;
@@ -297,4 +297,11 @@ margin-bottom: 10px;
     align-items: flex-start; /* Align to the top */
    margin: 10px;
     
+}
+#display-results{
+    text-align: center; /* Center the text */
+    padding: 20px;
+    width: 80%; /* Set a width */
+    max-width: 600px; /* Optional: max width */
+    padding-left: 27%;
 }
