@@ -27,7 +27,7 @@
     font-size: 20px;
     margin: 10px 0;
     width: 100%;
-    background: linear-gradient(145deg, #6200ea, #7a288a, #452064);
+    background: linear-gradient(145deg, #007bff , #00c8ff);
 }
   
 .start-page {
@@ -125,7 +125,7 @@
 }
 
 .blog, .moreQuotes, .Subscribe{
-    background: linear-gradient(145deg, #6200ea, #7a288a, #452064);
+    background: linear-gradient(145deg, #007bff , #00c8ff);
 
     /* Gradient for 3D effect */
     border: none; /* Removes the border */
@@ -147,7 +147,7 @@
     position: fixed;
     top: 0;
     width: 100%;
-    background-color: #7777aa; /* Semi-transparent background */
+    background-color: #000046; /* Semi-transparent background */
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Add a slight shadow for better visibility */
     padding: 0; /* Remove padding to make the height exact */
     z-index: 1000; /* Ensures the navbar stays above other elements */
@@ -160,7 +160,7 @@
     font-size: 20px;
     font-family: 'Cookies', serif;
     margin-left: 20px;
-    color: #FFF0D9;
+    color: #FFC0CB;
     padding-top: 10px; /* Move links closer to the top */
     align-self: flex-start; /* Aligns links to the top of the navbar */
 }
@@ -170,9 +170,6 @@
     text-shadow: 1px 1px 3px rgba(255, 255, 255, 0.7); /* Subtle glow */
 }
 
-#navbar a:visited {
-    color: #F6BC8C;
-}
 
   
   
@@ -180,7 +177,7 @@
     display: flex;
     flex-direction: column; /* Stack items vertically */
     align-items: center; /* Center items horizontally */
-    background: linear-gradient(130deg, #0d0d0d, #1a1a1a, #1e3a8a, #26448b, #2f3075);
+    background: linear-gradient(130deg, #000046, #3F00FF);
 
     background-attachment: fixed;
   
@@ -211,7 +208,7 @@
 
 
 .social-icons{
-    background-color: #7777aa;
+    background-color: #000046;
     padding: 5px;
 }
 
@@ -244,7 +241,7 @@
 }
 
 .search-bar button {
-    background: linear-gradient(145deg, #6200ea, #7a288a, #452064);
+    background: linear-gradient(145deg, #007bff , #00c8ff);
     border: none;
     border-radius: 20px;
     font-family: 'Hunters', sans-serif;
@@ -262,12 +259,10 @@
 
 
 .sign{
-    color: #7a288a;
+    color: #FFD700;
   }
 
-.sign:hover{
-    color: #452064;
-}
+  
 
 .search-bar select{
     margin-right: 14px;
