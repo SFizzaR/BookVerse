@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from "react";
 import "./user.css";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faUserFriends, faCalendarAlt, faPencilAlt,faArrowLeft, faArrowRight } from '@fortawesome/free-solid-svg-icons';
+import { faUserFriends, faCalendarAlt, faPencilAlt,faArrowLeft, faArrowRight, faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
 import axios from 'axios';
 import { useNavigate, useLocation } from 'react-router-dom';
+
+
 
 export function Reader( ) {
   const [profilePic, setProfilePic] = useState("https://via.placeholder.com/150");
@@ -11,8 +13,7 @@ export function Reader( ) {
   const [searchType, setSearchType] = useState('title');
   const [searchTerm, setSearchTerm] = useState('');
   const [searchResults, setSearchResults] = useState([]);
-  
-
+ 
   const location = useLocation();  // Get the state from the navigate function
   const username = location.state?.username;
   
@@ -159,7 +160,7 @@ let numcurrentReads = currentReads.length;
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
           />
-          <button onClick={handleSearch}>Search</button>
+          <button onClick={handleSearch}><FontAwesomeIcon icon={faMagnifyingGlass}></FontAwesomeIcon></button>
         </div>
         <FontAwesomeIcon icon={faUserFriends} className="icon-style" />
       <FontAwesomeIcon icon={faCalendarAlt} className="icon-style" />
@@ -179,18 +180,12 @@ let numcurrentReads = currentReads.length;
         <button className="edit-profile-button">Edit Profile</button>
         <button className="logout-button" onClick={handleLogout}>Log Out</button> {/* Call handleLogout on click */}
       </div>
+      
 
-      <div className="content-wrapper">
-        <div className="container">
-          <div className="section">
-          <p>Loading items...</p>
-          </div>
-        </div>
-
+        <div className="content-wrapper">
+       
         <div className="recommended-list">
-        <div className="header-container">
-          <h2 className="header">Recommended Books</h2>
-          </div>
+          <h2>Recommended Books</h2>
           <div id="recommended-book-list">
             {books2024.map((book) => (
               <div className="books" key={book.id}>
@@ -198,15 +193,10 @@ let numcurrentReads = currentReads.length;
               </div>
             ))}
           </div>
-          </div>
-
+        </div>
         <div className="current-reads">
-        <div className="header-container">
-    <h2 className="header">Current Reads</h2>
-    <h2 className="number">{numtbr}</h2>
-  </div>
-       
-          <div id="current-read-list" >
+          <h2>Current Reads ({currentReads.length})</h2>
+          <div id="current-read-list">
             {currentReads.map((book) => (
               <div className="books" key={book.id}>
                 <img src={book.image} alt={book.title} width="100" />
@@ -214,17 +204,9 @@ let numcurrentReads = currentReads.length;
             ))}
             <div className="add-more">+ Add More</div>
           </div>
-          </div>
-       
-
+        </div>
         <div className="to-be-read">
-         
-          <div className="header-container">
-    <h2 className="header">Current Reads</h2>
-    <h2 className="number">{numcurrentReads}</h2>
-  </div>
-        
-         
+          <h2>To Be Read ({tbr.length})</h2>
           <div id="to-be-read-list">
             {tbr.map((book) => (
               <div className="books" key={book.id}>
@@ -233,10 +215,11 @@ let numcurrentReads = currentReads.length;
             ))}
             <div className="add-more">+ Add More</div>
           </div>
-        
         </div>
       </div>
-    </div>
+
+      </div>
+
    
   );
 };
