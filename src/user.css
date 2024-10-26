@@ -5,7 +5,7 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    background: linear-gradient(130deg, #0d0d0d, #1a1a1a, #1e3a8a, #26448b, #2f3075);
+    background: linear-gradient(130deg, #000046, #3F00FF);
     padding-top: 70px;
     display: flex;
     height: 100vh; /* Full screen height */
@@ -19,7 +19,7 @@
     position: fixed;
     top: 0;
     width: 100%;
-    background-color: #7777aa;
+    background-color: #000046;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     padding: 10px 20px;
     z-index: 10000; /* Highest z-index */
@@ -33,7 +33,7 @@
 #user-navbar a {
     font-size: 20px;
     font-family: 'Cookies', serif;
-    color: #FFF0D9;
+    color: #FFC0CB;
     text-decoration: none;
     margin: 10px;
 }
@@ -44,7 +44,7 @@
 }
 
 #user-navbar a:visited {
-    color: #F6BC8C;
+    color: #FFC0CB;
 }
 
 .small-profile-pic {
@@ -71,10 +71,6 @@
 }
 
 .user-search-bar button {
-    background: linear-gradient(145deg, #6200ea, #7a288a, #452064);
-    border: none;
-    border-radius: 20px;
-    font-family: 'Cookie', cursive;
     color: #fff;
     padding: 5px 10px;
     box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.3), -5px -5px 10px rgba(255, 255, 255, 0.1);
@@ -125,7 +121,9 @@
     border-radius: 50%; /* Keeps it round */
     margin-bottom: 20px; /* Add some space below the picture */
 }
-
+.recommended-list h2, .current-reads h2, .to-be-read h2{
+    padding-left: 10px;
+}
 .side-bar h2 {
     color: white;
     font-size: 30px;
@@ -135,8 +133,9 @@
 }
 
 #title {
-    color: white;
+    color: #999999;
     font-family: 'Playfair Display', italic;
+    font-size: 30px;
 }
 
 #username {
@@ -262,11 +261,11 @@ transform: scale(1.05); /* Slight zoom on hover */
 }
 
 .add-more:hover {
-background-color: #6200ea; /* Change background on hover */
+background-color: #FFC0CB; /* Change background on hover */
 }
 .icon-style {
     margin-left: 8px;
-    color: #f0f0f0;
+    color: #999999;
   }
   
   .section{
