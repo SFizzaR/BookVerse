@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import ReaderPage from './Reader';
-import AuthorPage from './Author';
+import ReaderPage from './Pages/Reader';
+import AuthorPage from './Pages/Author';
+import SearchResult from './Pages/searchResult';
 import './styles.css'; 
 import Modal from './components/modal'; // Import the modal component
 import bookimage from './pic.jpg';
@@ -116,35 +117,43 @@ const ratingOptions = [0, 1, 2, 3, 4, 5]; // Possible rating options
   
   const handleSearch = async () => {
     try {
-        const queryParams = [];
-
-        // Check if the search type is ratings and add the searchTerm to minRating
-        if (searchType === 'ratings' && searchTerm) {
-            const ratingValue = parseFloat(searchTerm); // Parse as float
-            if (!isNaN(ratingValue) && ratingValue >= 0 && ratingValue <= 5) {
-                queryParams.push(`minRating=${encodeURIComponent(ratingValue)}`);
-            } else {
-                console.error('Rating must be a number between 0 and 5');
-                return; // Return early if the rating is invalid
-            }
-        } else if (searchTerm) {
-            if (searchType === 'title') {
-                queryParams.push(`title=${encodeURIComponent(searchTerm)}`);
-            } else if (searchType === 'author') {
-                queryParams.push(`author=${encodeURIComponent(searchTerm)}`);
-            } else if (searchType === 'genre') {
-                queryParams.push(`genre=${encodeURIComponent(searchTerm)}`);
-            }
+      const queryParams = [];
+      
+      // Build query parameters based on searchType and searchTerm
+      if (searchType === 'ratings' && searchTerm) {
+        const ratingValue = parseFloat(searchTerm);
+        if (!isNaN(ratingValue) && ratingValue >= 0 && ratingValue <= 5) {
+          queryParams.push(`minRating=${encodeURIComponent(ratingValue)}`);
+        } else {
+          console.error('Rating must be a number between 0 and 5');
+          return;
         }
-
-        const queryString = queryParams.length ? `?${queryParams.join('&')}` : '';
-        const response = await axios.get(`http://localhost:8002/home/search-books${queryString}`);
-        setSearchResults(response.data); 
+      } else if (searchTerm) {
+        queryParams.push(`${searchType}=${encodeURIComponent(searchTerm)}`);
+      }
+  
+      const queryString = queryParams.length ? `?${queryParams.join('&')}` : '';
+      const response = await axios.get(`http://localhost:8002/home/search-books${queryString}`);
+  
+      navigate('/search-results', {
+        state: {
+          searchResults: response.data || [], // Pass results, or an empty array if none
+          searchType,
+          searchTerm
+        }
+      });
     } catch (error) {
-        console.error('Error fetching search results:', error);
-        setSearchResults([]);
+      console.error('Error fetching search results:', error);
+      navigate('/search-results', {
+        state: {
+          searchResults: [], // Navigate with empty results on error
+          searchType,
+          searchTerm
+        }
+      });
     }
-};
+  };
+  
 
 return (
   <div className='homepage'>
@@ -290,6 +299,7 @@ export default function MainApp() {
     <Route path="/" element={<App />} />
     <Route path="/reader" element={<ReaderPage />} /> {/* Ensure this path and component exist */}
     <Route path="/author" element={<AuthorPage />} /> 
+    <Route path="/search-results" element={<SearchResult />} />
   </Routes>
 </Router>
 
