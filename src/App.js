@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import ReaderPage from './Pages/Reader';
-import AuthorPage from './Pages/Author';
-import SearchResult from './Pages/searchResult';
+import ReaderPage from './Reader';
+import AuthorPage from './Author';
+import SearchResult from './searchResult';
 import './styles.css'; 
 import Modal from './components/modal'; // Import the modal component
 import bookimage from './pic.jpg';
