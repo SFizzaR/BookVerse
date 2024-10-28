@@ -4,12 +4,12 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUserFriends, faCalendarAlt, faPencilAlt,faArrowLeft, faArrowRight, faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
 import axios from 'axios';
 import { useNavigate, useLocation } from 'react-router-dom';
-
+import avatar from '../assets/avatar.jpg'
 
 
 export function Reader( ) {
-  const [profilePic, setProfilePic] = useState("https://via.placeholder.com/150");
-  const [navbarProfilePic, setNavbarProfilePic] = useState("https://via.placeholder.com/40");
+  const [profilePic, setProfilePic] = useState(avatar);
+  const [navbarProfilePic, setNavbarProfilePic] = useState(avatar);
   const [searchType, setSearchType] = useState('title');
   const [searchTerm, setSearchTerm] = useState('');
   const [searchResults, setSearchResults] = useState([]);
