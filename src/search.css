@@ -1,0 +1,86 @@
+@import url('https://fonts.googleapis.com/css2?family=Cookie&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@1,500&display=swap');
+
+.search-page {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    padding-top: 70px;
+    height: 100vh; /* Full screen height */
+    overflow: hidden; /* Prevent horizontal scroll */
+    position: relative;
+    width: 100vw; /* Full width of the viewport */
+    background-color: #3F00FF;
+    flex-direction: column;
+    align-items: center;
+    color: #252525;
+    font-family: Garamond, serif;
+}
+
+p {
+    font-weight: bold;
+}
+
+h2 {
+    color: #252525 !important;
+    font-family: 'Playfair Display';
+}
+
+/* Container for consistent navbar styling */
+#user-navbar {
+    text-align: center;
+    width: 100%;
+    position: fixed;
+    top: 0;
+    background-color: #000046;
+    color: #ffffff;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+}
+#title{
+    color: #ffffff !important;
+}
+
+#display-results {
+    margin-top: 100px; /* Account for navbar height */
+    max-width: 1000px;
+    overflow-y: auto;
+    padding: 20px;
+    background: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    margin-left: auto; /* Centers the element horizontally */
+    margin-right: auto; /* Centers the element horizontally */
+    text-align: center; /* Center-aligns content inside */
+}
+/* Styling for the book list and cards */
+.search-page .search-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+    max-height: 70vh;
+    background-color: #ffffff;
+}
+
+.book-card {
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 16px;
+    text-align: center;
+    width: 200px;
+    transition: transform 0.3s ease;
+}
+
+.book-card:hover {
+    transform: scale(1.05);
+}
+
+.book-cover {
+    width: 100%;
+    height: auto;
+    border-radius: 5px;
+}
+
+
