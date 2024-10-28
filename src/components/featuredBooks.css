@@ -12,10 +12,12 @@
     font-family: 'Playfair Display';
     font-size: 20px;
     font-weight: 400;
+    color: #ffffff;
   }
 
   .book-info h2{
     font-size: 25px;
+    color: #ffffff !important;
   }
   
   .book-info img.small-book-image {
