@@ -134,12 +134,14 @@ const ratingOptions = [0, 1, 2, 3, 4, 5]; // Possible rating options
   
       const queryString = queryParams.length ? `?${queryParams.join('&')}` : '';
       const response = await axios.get(`http://localhost:8002/home/search-books${queryString}`);
-  
+      const searchResults = response.data.books || []; // Retrieve books from response
+
+
       navigate('/search-results', {
         state: {
-          searchResults: response.data || [], // Pass results, or an empty array if none
-          searchType,
-          searchTerm
+          searchResults, // Pass results array
+                searchType,
+                searchTerm
         }
       });
     } catch (error) {
