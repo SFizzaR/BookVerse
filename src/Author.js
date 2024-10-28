@@ -4,10 +4,10 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUserFriends, faCalendarAlt, faPencilAlt } from '@fortawesome/free-solid-svg-icons';
 import axios from 'axios';
 import { useNavigate, useLocation } from 'react-router-dom';
-
+import avatar from '../assets/avatar.jpg' 
 export function Author( ) {
-  const [profilePic, setProfilePic] = useState("https://via.placeholder.com/150");
-  const [navbarProfilePic, setNavbarProfilePic] = useState("https://via.placeholder.com/40");
+  const [profilePic, setProfilePic] = useState(avatar);
+  const [navbarProfilePic, setNavbarProfilePic] = useState(avatar);
   const [searchType, setSearchType] = useState('title');
   const [searchTerm, setSearchTerm] = useState('');
   const [searchResults, setSearchResults] = useState([]);
@@ -157,13 +157,6 @@ let seriesNum = MySeries.length;
       </div>
 
       <div className="content-wrapper">
-        <div className="container">
-          <div className="section">
-          <p>Loading items...</p>
-          </div>
-        </div>
-
-       
         <div className="My-books">
         <div className="header-container">
     <h2 className="header">Current Reads</h2>
