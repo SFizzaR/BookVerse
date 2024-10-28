@@ -1,49 +1,71 @@
-/* Style for the book list to create horizontal scrolling */
+/* Section CSS adjustments for consistency */
+.search-page {
+    padding: 20px;
+    background-color: #000046; /* Dark background to match theme */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+}
+
+/* Container for consistent navbar styling */
+#user-navbar {
+    text-align: center;
+    width: 100%;
+    position: fixed;
+    top: 0;
+    background-color: #000046;
+    color: #FFC0CB;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+}
+
+#display-results {
+    margin-top: 100px; /* Account for navbar height */
+    max-width: 1000px;
+    overflow-y: auto;
+    padding: 20px;
+    background: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Styling for the book list and cards */
 .book-list {
     display: flex;
-    align-items: center;
-    justify-content: center; /* Center items horizontally */
-    gap: 20px; /* Space between books */
-    overflow-x: auto; /* Allow horizontal scrolling */
-    white-space: nowrap; /* Prevent items from wrapping to a new line */
-    padding: 20px;
-    padding-top: 30px;
-    margin: 20px 0;
-    background: linear-gradient(130deg, #000046, #3F00FF);
-}
-.description{
-    font-family: 'Hunters', sans-serif;
-    font-size: 50px;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+    overflow-y: auto;
+    max-height: 70vh;
 }
 
-.book-list {
-    -ms-overflow-style: none; /* Hide scrollbar for Internet Explorer and Edge */
-    scrollbar-width: none; /* Hide scrollbar for Firefox */
-}
-
-/* Individual book item */
-.book {
-    display: inline-block;
+.book-card {
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 16px;
     text-align: center;
-    margin: 0 10px; /* This can be adjusted to control spacing */
-    transition: transform 0.3s ease-in-out;
+    width: 200px;
+    transition: transform 0.3s ease;
 }
 
-.book img {
-    max-width: 150px;
-    height: 250px;
-    object-fit: cover;
-    transition: transform 0.3s ease-in-out;
+.book-card:hover {
+    transform: scale(1.05);
 }
 
-/* Enlarge the book on hover */
-.book:hover {
-    transform: scale(1.1);
+.book-cover {
+    width: 100%;
+    height: auto;
+    border-radius: 5px;
 }
 
-.book p {
-    margin-top: 10px;
-    font-size: 18px;
-    color: whitesmoke;
-    font-family: 'Cookies', serif;
+/* Scrollbar customization */
+.book-list::-webkit-scrollbar {
+    width: 10px;
+}
+
+.book-list::-webkit-scrollbar-thumb {
+    background: #3F00FF;
+    border-radius: 5px;
 }
