@@ -93,13 +93,12 @@ router.post('/login', async (req, res) => {
 });
 
 router.get('/search-books', async (req, res) => {
-    const { title = '', author = '', genre = '', minRating = 0 } = req.query;
+    const { title = '', author = '', genre = '', minRating } = req.query;
 
-    // Log search query parameters
     console.log('Search criteria:', { title, author, genre, minRating });
 
     const parsedMinRating = parseFloat(minRating);
-    if (!title && !author && !genre && parsedMinRating < 0) {
+    if (!title && !author && !genre && (isNaN(parsedMinRating) || parsedMinRating < 0)) {
         return res.status(400).send('Please provide at least one search criteria');
     }
 
@@ -108,14 +107,13 @@ router.get('/search-books', async (req, res) => {
         connection = await connectToDatabase();
 
         let query = `
-            SELECT b.book_title, b.genre, a.author_name, b.ratings 
+            SELECT b.book_title, b.genre, a.author_name, b.ratings, b.book_image_url
             FROM books b 
             JOIN authors a ON b.author_id = a.author_id 
             WHERE 1=1`;
 
         const queryParams = {};
 
-        // Append conditions only if parameters are non-empty
         if (title.trim()) {
             query += ` AND LOWER(b.book_title) LIKE LOWER(:title)`;
             queryParams.title = `%${title}%`;
@@ -128,7 +126,7 @@ router.get('/search-books', async (req, res) => {
             query += ` AND LOWER(b.genre) LIKE LOWER(:genre)`;
             queryParams.genre = `%${genre}%`;
         }
-        if (parsedMinRating >= 0) { // Allow zero rating as a valid search
+        if (!isNaN(parsedMinRating) && parsedMinRating >= 0) {
             query += ` AND b.ratings = :minRating`;
             queryParams.minRating = parsedMinRating;
         }
@@ -137,13 +135,22 @@ router.get('/search-books', async (req, res) => {
         console.log('Query parameters:', queryParams);
 
         const results = await connection.execute(query, queryParams);
-
-        console.log('Search results:', results.rows); // Log search results
+        console.log('Search results:', results.rows);
 
         if (results.rows.length === 0) {
             return res.status(404).send('No books found with the given criteria');
         }
-        res.status(200).json({ totalBooks: results.rows.length, books: results.rows });
+
+        // Transform rows into objects
+        const books = results.rows.map(row => ({
+            title: row[0],
+            genre: row[1],
+            author: row[2],
+            ratings: row[3],
+            bookImageUrl: row[4] // Assuming this is the URL field
+        }));
+
+        res.status(200).json({ totalBooks: books.length, books });
     } catch (err) {
         console.error('Error searching for books:', err);
         res.status(500).json({ error: 'Failed to fetch books' });
