@@ -1,7 +1,6 @@
-@import url('https://fonts.googleapis.com/css2?family=Cookie&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@1,500&display=swap');
 
-.reader-page, .author-page, .search-page {
+.reader-page, .author-page {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
@@ -14,6 +13,7 @@
     width: 100vw; /* Full width of the viewport */
 }
 
+/* Navbar at the top */
 #user-navbar {
     height: 80px;
     position: fixed;
@@ -21,37 +21,20 @@
     width: 100%;
     background-color: #000046;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    padding: 10px 20px;
-    z-index: 10000; /* Highest z-index */
+    z-index: 3000; /* Highest z-index to stay on top */
     display: flex;
     justify-content: space-between;
     align-items: center;
-    overflow: hidden;
-    padding-left: 5px;
+    font-weight: bolder;
 }
 
-#user-navbar a {
-    font-size: 20px;
-    font-family: 'Cookies', serif;
-    color: #FFC0CB;
-    text-decoration: none;
-    margin: 10px;
-}
-
-#user-navbar a:hover {
-    color: #ffffff;
-    text-shadow: 1px 1px 3px rgba(255, 255, 255, 0.7);
-}
-
-#user-navbar a:visited {
-    color: #FFC0CB;
-}
 
 .small-profile-pic {
     width: 40px;
     height: 40px;
     border-radius: 50%;
-    margin-left: auto;
+    margin-left: 10px;
+    margin-right: 10px;
 }
 
 .user-search-bar {
@@ -91,16 +74,17 @@
 }
 .side-bar {
     background-color: #252525;
-    height: 100%;
+    height: calc(100vh - 80px); /* Full viewport height minus navbar height */
     width: 270px;
-    position: fixed; /* Fixed position for the sidebar */
-    top: 70px; /* Starts just under the navbar */
+    position: fixed;
+    top: 80px; /* Starts directly below the navbar */
     left: 0;
     padding: 20px;
     display: flex;
     flex-direction: column;
     align-items: center;
-    z-index: 1000;
+    z-index: 2000; /* Lower than navbar to ensure it’s behind */
+    box-sizing: border-box;
 }
 
 /* Content wrapper next to the sidebar */
@@ -133,9 +117,10 @@
 }
 
 #title {
-    color: #999999;
+    color: #ffffff;
     font-family: 'Playfair Display', italic;
     font-size: 30px;
+    margin: 15px;
 }
 
 #username {
