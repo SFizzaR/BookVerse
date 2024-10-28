@@ -1,6 +1,6 @@
 import React from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import './components/section.css'; // Ensure this path is correct
+import './search.css'; // Ensure this path is correct
 
 function SearchResults() {
   const location = useLocation();
@@ -20,7 +20,7 @@ function SearchResults() {
         <p>Search Type: {searchType}</p>
         <p>Search Term: {searchTerm}</p>
 
-        <div className="book-list">
+        <div className="search-list">
           {searchResults && searchResults.length > 0 ? (
             searchResults.map((result, index) => (
               <div key={index} className="book-card">
