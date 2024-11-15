@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "./user.css";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faUserFriends, faCalendarAlt, faPencilAlt,faArrowLeft, faArrowRight, faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
+import { faUserFriends, faCalendarAlt, faPencilAlt,faArrowLeft, faArrowRight, faMagnifyingGlass, faTrash } from '@fortawesome/free-solid-svg-icons';
 import axios from 'axios';
 import { useNavigate, useLocation } from 'react-router-dom';
 import avatar from '../assets/avatar.jpg'
@@ -56,7 +56,16 @@ export function Reader( ) {
     }
   };
   
-
+  const scrollList = (direction, listId) => {
+    const list = document.getElementById(listId).querySelector('.scroll-items');
+    const scrollAmount = 200; // Amount to scroll on each arrow click (adjust as needed)
+    if (direction === 'left') {
+      list.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
+    } else if (direction === 'right') {
+      list.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+    }
+  };
+  
   const books2024 = [
     {
       id: "book1",
@@ -195,27 +204,56 @@ let numcurrentReads = currentReads.length;
           </div>
         </div>
         <div className="current-reads">
-          <h2>Current Reads ({currentReads.length})</h2>
-          <div id="current-read-list">
-            {currentReads.map((book) => (
-              <div className="books" key={book.id}>
-                <img src={book.image} alt={book.title} width="100" />
-              </div>
-            ))}
-            <div className="add-more">+ Add More</div>
+  <h2>Current Reads ({currentReads.length})</h2>
+  <div id="current-read-list" className="scroll-container">
+    <button className="scroll-arrow left" onClick={() => scrollList('left', 'current-read-list')}>←</button>
+    <div id="current-read-list-items" className="scroll-items">
+      {currentReads.map((book) => (
+        <div className="books" key={book.id}>
+          <div className="book-img-wrapper">
+            <img src={book.image} alt={book.title} width="100" />
+            <span
+              className="delete-icon"
+              onClick={() => handleDelete(book.id)}
+            >
+              <FontAwesomeIcon icon={faTrash} /> {/* Font Awesome trash icon */}
+            </span>
           </div>
         </div>
-        <div className="to-be-read">
-          <h2>To Be Read ({tbr.length})</h2>
-          <div id="to-be-read-list">
-            {tbr.map((book) => (
-              <div className="books" key={book.id}>
-                <img src={book.image} alt={book.title} width="100" />
-              </div>
-            ))}
-            <div className="add-more">+ Add More</div>
+      ))}
+    </div>
+    <div className="add-more">+ Add More</div>
+    <button className="scroll-arrow right" onClick={() => scrollList('right', 'current-read-list')}>→</button>
+  </div>
+  
+</div>
+
+<div className="to-be-read">
+  <h2>To Be Read ({tbr.length})</h2>
+  <div id="to-be-read-list" className="scroll-container">
+    <button className="scroll-arrow left" onClick={() => scrollList('left', 'to-be-read-list')}>←</button>
+    <div id="to-be-read-list-items" className="scroll-items">
+      {tbr.map((book) => (
+        <div className="books" key={book.id}>
+          <div className="book-img-wrapper">
+            <img src={book.image} alt={book.title} width="100" />
+            <span
+              className="delete-icon"
+              onClick={() => handleDelete(book.id)}
+            >
+              <FontAwesomeIcon icon={faTrash} /> {/* Font Awesome trash icon */}
+            </span>
           </div>
         </div>
+      ))}
+    </div>
+    <div className="add-more">+ Add More</div>
+    <button className="scroll-arrow right" onClick={() => scrollList('right', 'to-be-read-list')}>→</button>
+  </div>
+ 
+</div>
+
+
       </div>
 
       </div>
