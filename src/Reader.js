@@ -1,71 +1,26 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import "./user.css";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faUserFriends, faCalendarAlt, faPencilAlt,faArrowLeft, faArrowRight, faMagnifyingGlass, faTrash } from '@fortawesome/free-solid-svg-icons';
+import { faUserFriends, faCalendarAlt, faPencilAlt, faMagnifyingGlass, faTrash } from '@fortawesome/free-solid-svg-icons';
 import axios from 'axios';
 import { useNavigate, useLocation } from 'react-router-dom';
 import avatar from '../assets/avatar.jpg'
+import EditProfile from "./EditProfile";
 
-
-export function Reader( ) {
+export function Reader() {
   const [profilePic, setProfilePic] = useState(avatar);
   const [navbarProfilePic, setNavbarProfilePic] = useState(avatar);
   const [searchType, setSearchType] = useState('title');
   const [searchTerm, setSearchTerm] = useState('');
   const [searchResults, setSearchResults] = useState([]);
+  const [isEditing, setIsEditing] = useState(false);
  
-  const location = useLocation();  // Get the state from the navigate function
+  const location = useLocation();  
   const username = location.state?.username;
   
-  const handleSearch = async () => {
-    try {
-      const queryParams = [];
-      
-      // Build query parameters based on searchType and searchTerm
-      if (searchType === 'ratings' && searchTerm) {
-        const ratingValue = parseFloat(searchTerm);
-        if (!isNaN(ratingValue) && ratingValue >= 0 && ratingValue <= 5) {
-          queryParams.push(`minRating=${encodeURIComponent(ratingValue)}`);
-        } else {
-          console.error('Rating must be a number between 0 and 5');
-          return;
-        }
-      } else if (searchTerm) {
-        queryParams.push(`${searchType}=${encodeURIComponent(searchTerm)}`);
-      }
-  
-      const queryString = queryParams.length ? `?${queryParams.join('&')}` : '';
-      const response = await axios.get(`http://localhost:8002/home/search-books${queryString}`);
-  
-      navigate('/search-results', {
-        state: {
-          searchResults: response.data || [], // Pass results, or an empty array if none
-          searchType,
-          searchTerm
-        }
-      });
-    } catch (error) {
-      console.error('Error fetching search results:', error);
-      navigate('/search-results', {
-        state: {
-          searchResults: [], // Navigate with empty results on error
-          searchType,
-          searchTerm
-        }
-      });
-    }
-  };
-  
-  const scrollList = (direction, listId) => {
-    const list = document.getElementById(listId).querySelector('.scroll-items');
-    const scrollAmount = 200; // Amount to scroll on each arrow click (adjust as needed)
-    if (direction === 'left') {
-      list.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
-    } else if (direction === 'right') {
-      list.scrollBy({ left: scrollAmount, behavior: 'smooth' });
-    }
-  };
-  
+  const navigate = useNavigate();
+
+  // Sample books2024 array defined inside the component
   const books2024 = [
     {
       id: "book1",
@@ -88,9 +43,6 @@ export function Reader( ) {
       image: "https://m.media-amazon.com/images/I/51ZvZFJOsrL._AC_UF1000,1000_QL80_.jpg",
     },
   ];
- 
-
-  const navigate = useNavigate(); // Initialize navigate
 
   const currentReads = [
     {
@@ -117,8 +69,7 @@ export function Reader( ) {
       image: "https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1539183359i/35398627.jpg",
     },
   ];
-let numtbr = tbr.length;
-let numcurrentReads = currentReads.length;
+
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -132,8 +83,58 @@ let numcurrentReads = currentReads.length;
     }
   };
 
+  const handleSearch = async () => {
+    try {
+      const queryParams = [];
+      
+      if (searchType === 'ratings' && searchTerm) {
+        const ratingValue = parseFloat(searchTerm);
+        if (!isNaN(ratingValue) && ratingValue >= 0 && ratingValue <= 5) {
+          queryParams.push(`minRating=${encodeURIComponent(ratingValue)}`);
+        } else {
+          console.error('Rating must be a number between 0 and 5');
+          return;
+        }
+      } else if (searchTerm) {
+        queryParams.push(`${searchType}=${encodeURIComponent(searchTerm)}`);
+      }
+  
+      const queryString = queryParams.length ? `?${queryParams.join('&')}` : '';
+      const response = await axios.get(`http://localhost:8002/home/search-books${queryString}`);
+  
+      navigate('/search-results', {
+        state: {
+          searchResults: response.data || [],
+          searchType,
+          searchTerm
+        }
+      });
+    } catch (error) {
+      console.error('Error fetching search results:', error);
+      navigate('/search-results', {
+        state: {
+          searchResults: [],
+          searchType,
+          searchTerm
+        }
+      });
+    }
+  };
 
-  // Define handleLogout function
+  const scrollList = (direction, listId) => {
+    const list = document.getElementById(listId).querySelector('.scroll-items');
+    const scrollAmount = 200; 
+    if (direction === 'left') {
+      list.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
+    } else if (direction === 'right') {
+      list.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+    }
+  };
+
+  const handleEditClick = () => {
+    setIsEditing((prevIsEditing) => !prevIsEditing);
+  };
+
   const handleLogout = async () => {
     try {
       const response = await axios.post("http://localhost:8002/reader/logout", {}, {
@@ -143,39 +144,38 @@ let numcurrentReads = currentReads.length;
       });
       if (response.status === 200) {
         console.log("Logout successful:", response.data);
-        localStorage.removeItem('token'); // Clear token from storage
-        navigate('/#'); // Redirect to login page after logout
+        localStorage.removeItem('token');
+        navigate('/#');
       }
     } catch (error) {
       console.error("Logout failed:", error);
     }
   };
 
-
   return (
     <div className="reader-page">
       <div id="user-navbar">
         <h2 id="title">Book Verse</h2>
         <div className="user-search-bar">
-        <select value={searchType} onChange={(e) => setSearchType(e.target.value)}>
-              <option value="title">Title</option>
-              <option value="author">Author</option>
-              <option value="genre">Genre</option>
-              <option value="ratings">Rating</option>
-              </select>
+          <select value={searchType} onChange={(e) => setSearchType(e.target.value)}>
+            <option value="title">Title</option>
+            <option value="author">Author</option>
+            <option value="genre">Genre</option>
+            <option value="ratings">Rating</option>
+          </select>
           <input
-              type="text"
-              placeholder={`Search by ${searchType}...`}
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
+            type="text"
+            placeholder={`Search by ${searchType}...`}
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
           />
-          <button onClick={handleSearch}><FontAwesomeIcon icon={faMagnifyingGlass}></FontAwesomeIcon></button>
+          <button onClick={handleSearch}><FontAwesomeIcon icon={faMagnifyingGlass} /></button>
         </div>
         <FontAwesomeIcon icon={faUserFriends} className="icon-style" />
-      <FontAwesomeIcon icon={faCalendarAlt} className="icon-style" />
-      <FontAwesomeIcon icon={faPencilAlt} className="icon-style" />
+        <FontAwesomeIcon icon={faCalendarAlt} className="icon-style" />
+        <FontAwesomeIcon icon={faPencilAlt} className="icon-style" />
         <a href="#">
-        <img src={navbarProfilePic} alt="Profile" className="small-profile-pic" id="profile-pic"/>
+          <img src={navbarProfilePic} alt="Profile" className="small-profile-pic" id="profile-pic" />
         </a>
       </div>
 
@@ -186,14 +186,15 @@ let numcurrentReads = currentReads.length;
         <h4 id="username">{username}</h4>
         
         <h5>Badges</h5>
-        <button className="edit-profile-button">Edit Profile</button>
-        <button className="logout-button" onClick={handleLogout}>Log Out</button> {/* Call handleLogout on click */}
+        <button onClick={handleEditClick} className="edit-profile-button">
+        {isEditing ? "Cancel Edit" : "Edit Profile"}
+      </button>
+      {isEditing && <EditProfile />}
+        <button className="logout-button" onClick={handleLogout}>Log Out</button>
       </div>
-      
 
-        <div className="content-wrapper">
-       
-        <div className="recommended-list">
+      <div className="content-wrapper">
+      <div className="recommended-list">
           <h2>Recommended Books</h2>
           <div id="recommended-book-list">
             {books2024.map((book) => (
@@ -252,13 +253,8 @@ let numcurrentReads = currentReads.length;
   </div>
  
 </div>
-
-
       </div>
-
-      </div>
-
-   
+    </div>
   );
 };
 
