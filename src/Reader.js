@@ -7,6 +7,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import avatar from '../assets/avatar.jpg'
 import EditProfile from "./EditProfile";
 
+
 export function Reader() {
   const [profilePic, setProfilePic] = useState(avatar);
   const [navbarProfilePic, setNavbarProfilePic] = useState(avatar);
@@ -19,6 +20,10 @@ export function Reader() {
   const username = location.state?.username;
   
   const navigate = useNavigate();
+
+  const handleCalendarClick = () => {
+    navigate("/calendar");
+  };
 
   // Sample books2024 array defined inside the component
   const books2024 = [
@@ -172,7 +177,7 @@ export function Reader() {
           <button onClick={handleSearch}><FontAwesomeIcon icon={faMagnifyingGlass} /></button>
         </div>
         <FontAwesomeIcon icon={faUserFriends} className="icon-style" />
-        <FontAwesomeIcon icon={faCalendarAlt} className="icon-style" />
+        <FontAwesomeIcon icon={faCalendarAlt} className="icon-style" onClick={handleCalendarClick} />
         <FontAwesomeIcon icon={faPencilAlt} className="icon-style" />
         <a href="#">
           <img src={navbarProfilePic} alt="Profile" className="small-profile-pic" id="profile-pic" />
