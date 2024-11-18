@@ -1,26 +1,23 @@
 import React, { useState, useEffect } from "react";
 import "./user.css";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faUserFriends, faCalendarAlt, faPencilAlt, faMagnifyingGlass, faTrash } from '@fortawesome/free-solid-svg-icons';
+import { faUserFriends, faCalendarAlt, faPencilAlt } from '@fortawesome/free-solid-svg-icons';
 import axios from 'axios';
 import { useNavigate, useLocation } from 'react-router-dom';
-import avatar from '../assets/avatar.jpg' 
-import EditProfile from "./EditProfile";
+import avatar from './assets/avatar.jpg';
 
-export function Author( ) {
+export function Author() {
   const [profilePic, setProfilePic] = useState(avatar);
   const [navbarProfilePic, setNavbarProfilePic] = useState(avatar);
   const [searchType, setSearchType] = useState('title');
   const [searchTerm, setSearchTerm] = useState('');
   const [searchResults, setSearchResults] = useState([]);
-  const [isEditing, setIsEditing] = useState(false);
-  
 
-  const location = useLocation();  // Get the state from the navigate function
+  const location = useLocation();
   const username = location.state?.username;
-  const handleCalendarClick = () => {
-    navigate("/calendar");
-  };
+  const authorId = location.state?.authorId || null; // Get authorId from location state
+
+
   const handleSearch = async () => {
     try {
       const queryParams = [];
@@ -39,13 +36,15 @@ export function Author( ) {
       }
   
       const queryString = queryParams.length ? `?${queryParams.join('&')}` : '';
-      const response = await axios.get(`http://localhost:8002/home/search-books${queryString}`);
-  
+      const response = await axios.get(`http://localhost:8002/author/search-books${queryString}`);
+      const searchResults = response.data.books || []; // Retrieve books from response
+
+
       navigate('/search-results', {
         state: {
-          searchResults: response.data || [], // Pass results, or an empty array if none
-          searchType,
-          searchTerm
+          searchResults, // Pass results array
+                searchType,
+                searchTerm
         }
       });
     } catch (error) {
@@ -59,8 +58,6 @@ export function Author( ) {
       });
     }
   };
-  
-
 
   const navigate = useNavigate(); // Initialize navigate
 
@@ -91,6 +88,7 @@ export function Author( ) {
   ];
 let booksNum = Mybooks.length;
 let seriesNum = MySeries.length;
+
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -104,64 +102,64 @@ let seriesNum = MySeries.length;
     }
   };
 
-
-  // Define handleLogout function
   const handleLogout = async () => {
     try {
+      const token = localStorage.getItem('jwtToken');
+      if (!token) {
+        console.error("No token found in localStorage");
+        return;
+      }
+  
+      console.log('Sending logout request...');
       const response = await axios.post("http://localhost:8002/reader/logout", {}, {
         headers: {
-          Authorization: `Bearer ${localStorage.getItem('token')}`
+          Authorization: `Bearer ${token}`
         }
       });
+  
+      console.log('Server response:', response); // Ensure response is correct
+  
       if (response.status === 200) {
         console.log("Logout successful:", response.data);
-        localStorage.removeItem('token'); // Clear token from storage
-        navigate('/#'); // Redirect to login page after logout
+  
+        // Remove token and role from localStorage
+        localStorage.removeItem('jwtToken');
+        localStorage.removeItem('role');
+        
+        console.log('Tokens and role removed:', localStorage.getItem('jwtToken'), localStorage.getItem('role'));
+  
+        navigate('/'); // Navigate to the homepage or a different route after logout
       }
     } catch (error) {
       console.error("Logout failed:", error);
     }
   };
-
-  const scrollList = (direction, listId) => {
-    const list = document.getElementById(listId).querySelector('.scroll-items');
-    const scrollAmount = 200; 
-    if (direction === 'left') {
-      list.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
-    } else if (direction === 'right') {
-      list.scrollBy({ left: scrollAmount, behavior: 'smooth' });
-    }
-  };
-
-  const handleEditClick = () => {
-    setIsEditing((prevIsEditing) => !prevIsEditing);
-  };
-
+    
 
   return (
     <div className="author-page">
       <div id="user-navbar">
         <h2 id="title">Book Verse</h2>
         <div className="user-search-bar">
-        <select value={searchType} onChange={(e) => setSearchType(e.target.value)}>
-              <option value="title">Title</option>
-              <option value="author">Author</option>
-              <option value="genre">Genre</option>
-              <option value="ratings">Rating</option>
-              </select>
+          <select value={searchType} onChange={(e) => setSearchType(e.target.value)}>
+            <option value="title">Title</option>
+            <option value="author">Author</option>
+            <option value="genre">Genre</option>
+            <option value="ratings">Rating</option>
+          </select>
           <input
-              type="text"
-              placeholder={`Search by ${searchType}...`}
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
+            type="text"
+            placeholder={`Search by ${searchType}...`}
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
           />
           <button onClick={handleSearch}>Search</button>
         </div>
         <FontAwesomeIcon icon={faUserFriends} className="icon-style" />
-        <FontAwesomeIcon icon={faCalendarAlt} className="icon-style" onClick={handleCalendarClick} />
-      <FontAwesomeIcon icon={faPencilAlt} className="icon-style" />
+        <FontAwesomeIcon icon={faCalendarAlt} className="icon-style" />
+        <FontAwesomeIcon icon={faPencilAlt} className="icon-style" />
         <a href="#">
-        <img src={navbarProfilePic} alt="Profile" className="small-profile-pic" id="profile-pic"/>
+          <img src={navbarProfilePic} alt="Profile" className="small-profile-pic" id="profile-pic" />
         </a>
       </div>
 
@@ -170,74 +168,45 @@ let seriesNum = MySeries.length;
         <img src={profilePic} alt="Profile" className="profile-pic" id="profile-pic" onClick={() => document.getElementById('file-input').click()} />
         <input type="file" id="file-input" accept="image/*" style={{ display: "none" }} onChange={handleFileChange} />
         <h4 id="username">{username}</h4>
-        
         <h5>Badges</h5>
-        <button onClick={handleEditClick} className="edit-profile-button">
-        {isEditing ? "Cancel Edit" : "Edit Profile"}
-      </button>
-      {isEditing && <EditProfile />}
-        <button className="logout-button" onClick={handleLogout}>Log Out</button> {/* Call handleLogout on click */}
+        <button className="edit-profile-button">Edit Profile</button>
+        <button className="logout-button" onClick={handleLogout}>Log Out</button>
       </div>
 
       <div className="content-wrapper">
         <div className="My-books">
-        <div className="header-container">
-    <h2 className="header">Current Reads</h2>
-    <h2 className="number">{booksNum}</h2>
-  </div>
-       
-          <div id="my-book-list" className="scroll-container">
-          <button className="scroll-arrow left" onClick={() => scrollList('left', 'current-read-list')}>←</button>
-          <div id="current-read-list-items" className="scroll-items">
-           {currentReads.map((book) => (
+          <div className="header-container">
+            <h2 className="header">Current Reads</h2>
+            <h2 className="number">{Mybooks.length}</h2>
+          </div>
+          <div id="my-book-list">
+            {Mybooks.map((book) => (
               <div className="books" key={book.id}>
                 <img src={book.image} alt={book.title} width="100" />
-                <span
-              className="delete-icon"
-              onClick={() => handleDelete(book.id)}
-            >
-              <FontAwesomeIcon icon={faTrash} /> {/* Font Awesome trash icon */}
-            </span>
+                <p>{book.title}</p>
               </div>
             ))}
             <div className="add-more">+ Add More</div>
-            <button className="scroll-arrow right" onClick={() => scrollList('right', 'current-read-list')}>→</button>
-  </div>
           </div>
-          </div>
-       
+        </div>
 
         <div className="my-series">
-         
           <div className="header-container">
-    <h2 className="header">Current Reads</h2>
-    <h2 className="number">{seriesNum}</h2>
-  </div>
-        
-         
-          <div id="my-series-list" className="scroll-container">
-          <button className="scroll-arrow left" onClick={() => scrollList('left', 'to-be-read-list')}>←</button>
-          <div id="to-be-read-list-items" className="scroll-items">
-            {tbr.map((book) => (
-              <div className="books" key={book.id}>
-                <img src={book.image} alt={book.title} width="100" />
-                <span
-              className="delete-icon"
-              onClick={() => handleDelete(book.id)}
-            >
-              <FontAwesomeIcon icon={faTrash} /> {/* Font Awesome trash icon */}
-            </span>
+            <h2 className="header">Current Series</h2>
+            <h2 className="number">{MySeries.length}</h2>
+          </div>
+          <div id="my-series-list">
+            {MySeries.map((series) => (
+              <div className="books" key={series.id}>
+                <img src={series.image} alt={series.title} width="100" />
+                <p>{series.title}</p>
               </div>
             ))}
             <div className="add-more">+ Add More</div>
-            <button className="scroll-arrow right" onClick={() => scrollList('right', 'to-be-read-list')}>→</button>
-  </div>
           </div>
-        
         </div>
       </div>
     </div>
-   
   );
 };
 
