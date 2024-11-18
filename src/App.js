@@ -61,7 +61,14 @@ const ratingOptions = [0, 1, 2, 3, 4, 5]; // Possible rating options
     setEmail(e.target.value);
   };
 
-  const handleSubmit = async (e) => {
+
+// If using a select or radio button for role
+const handleRoleChange = (e) => {
+    setRole(e.target.value);
+};
+
+
+ /* const handleSubmit = async (e) => {
     e.preventDefault();
   
     if (password.length < 8) {
@@ -112,9 +119,60 @@ const ratingOptions = [0, 1, 2, 3, 4, 5]; // Possible rating options
       }
     }
   };
-  
-  
-  
+*/
+const handleSubmit = async (e) => {
+  e.preventDefault();
+
+  // Validate password length
+  if (password.length < 8) {
+    setErrorMessage('Password must be at least 8 characters long.');
+    return;
+  }
+
+  try {
+    const apiUrl = isSignUpMode ? 'http://localhost:8002/home/signup' : 'http://localhost:8002/home/login';
+
+    // Prepare payload with username, password, email (if sign up), and role
+    const payload = {
+      username,
+      password,
+      role, // Ensure role is passed directly here
+    };
+
+    if (isSignUpMode) {
+      payload.email = email; // Only include email on signup
+    }
+
+    // Send request
+    const response = await axios.post(apiUrl, payload);
+
+    // Handle response (expecting token and role)
+    const { token } = response.data;
+    if (!token) {
+      throw new Error("Token not received from server");
+    }
+
+    // Store the token and role in localStorage
+    localStorage.setItem('jwtToken', token);
+    localStorage.setItem('role', role); // Ensure role is saved too
+
+    setErrorMessage('');
+
+    // Redirect to appropriate page based on role
+    if (role === 'reader') {
+      navigate('/reader', { state: { username } });
+    } else if (role === 'author') {
+      navigate('/author', { state: { username } });
+    }
+
+  } catch (error) {
+    console.error('Error:', error.response ? error.response.data : error.message);
+    setErrorMessage('An error occurred. Please try again.');
+  }
+};
+
+
+
   const handleSearch = async () => {
     try {
       const queryParams = [];
