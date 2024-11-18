@@ -4,6 +4,7 @@ const jwt = require('jsonwebtoken');
 const connectToDatabase = require('./db');
 const router = express.Router();
 
+/*
 // Signup route
 router.post('/signup', async (req, res) => {
     const { username, email, password, role } = req.body;
@@ -30,7 +31,50 @@ router.post('/signup', async (req, res) => {
         res.status(500).send('Error registering user');
     }
 });
+*/
+router.post('/signup', async (req, res) => {
+    const { username, password, email, role } = req.body; // Add `email` here
 
+    try {
+        const connection = await connectToDatabase();
+
+        // Hash the password
+        const hashedPassword = await bcrypt.hash(password, 10);
+        console.log('Hashed password:', hashedPassword); // Log hashed password
+
+        // Insert user into the Users table
+        const result = await connection.execute(
+            `INSERT INTO Users (username, email, password, role) VALUES (:username, :email, :password, :role)`,
+            { username, email, password: hashedPassword, role }
+        );
+        console.log('User insert result:', result); // Log result of insert query
+        await connection.commit();
+
+        // Retrieve the newly created user_id
+        const results = await connection.execute(
+            `SELECT user_id, ROLE FROM USERS WHERE username = :username`,
+            [username]
+        );
+
+        if (results.rows.length === 0) {
+            return res.status(400).json({ error: 'User creation failed' });
+        }
+
+        const user = results.rows[0];
+        const user_id = user.user_id;
+        const user_role = user.ROLE;
+
+        // Create a JWT token with user_id and role
+        const token = jwt.sign({ id: user_id, role: user_role }, process.env.JWT_SECRET, { expiresIn: '1h' });
+
+        res.status(200).json({ message: 'Signup successful', token, role: user_role });
+    } catch (error) {
+        console.error('Signup error:', error);
+        res.status(500).json({ error: 'An error occurred during signup' });
+    }
+});
+
+/*
 // Login route
 router.post('/login', async (req, res) => {
   console.log('Login route hit'); // Log route hit
@@ -80,18 +124,54 @@ router.post('/login', async (req, res) => {
     } catch (error) {
         console.error('Error logging in:', error);
         res.status(500).json({ error: 'An error occurred. Please try again.' });
-    } finally {
-        // Close the database connection if it exists
-        if (connection) {
-            try {
-                await connection.close();
-            } catch (err) {
-                console.error('Error closing connection', err);
-            }
+    } 
+});
+*/
+
+// Login route
+router.post('/login', async (req, res) => {
+    const { username, password } = req.body;
+
+    try {
+        const connection = await connectToDatabase();
+
+        // Retrieve user based on username
+        const result = await connection.execute(
+            `SELECT * FROM USERS WHERE USERNAME = :username`,
+            [username]
+        );
+
+        if (result.rows.length === 0) {
+            return res.status(400).json({ error: 'User not found' });
         }
+
+        const user = result.rows[0];
+        console.log('User object from DB:', user); // Log the entire user object
+
+        // The password field is the 4th element (index 3) in the `user` array
+        const storedHashedPassword = user[3]; // Accessing the 4th element (password hash)
+
+        // Check if the password exists
+        if (!storedHashedPassword) {
+            return res.status(400).json({ error: 'Password not found in database' });
+        }
+
+        // Compare the provided password with the stored hashed password
+        const isPasswordValid = await bcrypt.compare(password, storedHashedPassword);
+        if (!isPasswordValid) {
+            return res.status(400).json({ error: 'Invalid password' });
+        }
+
+        // Create a JWT token for the user
+        const token = jwt.sign({ id: user[0], role: user[4] }, 'your_jwt_secret', { expiresIn: '1h' });
+
+        res.status(200).json({ message: 'Login successful', token, role: user[4] });
+    } catch (error) {
+        console.error('Login error:', error);
+        res.status(500).json({ error: 'An error occurred during login' });
     }
 });
-
+  
 router.get('/search-books', async (req, res) => {
     const { title = '', author = '', genre = '', minRating } = req.query;
 
