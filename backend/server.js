@@ -5,6 +5,7 @@ const cors = require('cors');
 const homepageroutes=require('./homepageroutes');
 const authroutes=require('./authroutes');
 const readerRoutes=require('./readerRoutes');
+const readinglistroutes=require('./readingListRoutes');
 
 dotenv.config();
 
@@ -19,6 +20,7 @@ app.use('/', routes);
 app.use('/home',homepageroutes);
 app.use('/author',authroutes);
 app.use('/reader',readerRoutes);
+app.use('/readinglist',readinglistroutes);
 // Start the server
 app.listen(port, '0.0.0.0', () => {
 console.log(`Server is running on port ${port}`);
