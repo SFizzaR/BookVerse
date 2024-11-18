@@ -1,19 +1,22 @@
 import React, { useState } from 'react';
-import ReaderPage from './Reader';
-import AuthorPage from './Author';
-import SearchResult from './searchResult';
+import ReaderPage from './Pages/Reader.jsx';
+import AuthorPage from './Pages/author.jsx';
+import SearchResult from './Pages/searchResult';
+import AboutUs from './aboutUs.jsx';
+import SocailIcons from './components/SocailIcons.jsx';
+import Navbar from './components/navbarHome.jsx';
 import './styles.css'; 
 import Modal from './components/modal'; // Import the modal component
-import bookimage from './pic.jpg';
+import bookimage from './assets/pic.jpg';
 import Quote from './components/quotes';
 import Section from './components/section';
 import FeaturedBooks from './components/featuredBooks';
 import FeaturedPosts from './components/popularPost';
 import { books2024, summerbooks, classics } from './data/books';
-import { FaFacebookF, FaInstagram, FaPhoneAlt, FaEnvelope } from 'react-icons/fa';
 import axios from 'axios';
 import { BrowserRouter as Router, Routes, Route, useNavigate } from 'react-router-dom'; // Import Router and Routes
-
+import { AuthProvider } from './AuthContext';
+import CalendarPage from "./Pages/EventCaleneder.jsx";
 function App() {
   const [isModalOpen, setModalOpen] = useState(false);
   const [isSignUpMode, setSignUpMode] = useState(false); // Sign In is default
@@ -61,14 +64,7 @@ const ratingOptions = [0, 1, 2, 3, 4, 5]; // Possible rating options
     setEmail(e.target.value);
   };
 
-
-// If using a select or radio button for role
-const handleRoleChange = (e) => {
-    setRole(e.target.value);
-};
-
-
- /* const handleSubmit = async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
   
     if (password.length < 8) {
@@ -119,60 +115,9 @@ const handleRoleChange = (e) => {
       }
     }
   };
-*/
-const handleSubmit = async (e) => {
-  e.preventDefault();
-
-  // Validate password length
-  if (password.length < 8) {
-    setErrorMessage('Password must be at least 8 characters long.');
-    return;
-  }
-
-  try {
-    const apiUrl = isSignUpMode ? 'http://localhost:8002/home/signup' : 'http://localhost:8002/home/login';
-
-    // Prepare payload with username, password, email (if sign up), and role
-    const payload = {
-      username,
-      password,
-      role, // Ensure role is passed directly here
-    };
-
-    if (isSignUpMode) {
-      payload.email = email; // Only include email on signup
-    }
-
-    // Send request
-    const response = await axios.post(apiUrl, payload);
-
-    // Handle response (expecting token and role)
-    const { token } = response.data;
-    if (!token) {
-      throw new Error("Token not received from server");
-    }
-
-    // Store the token and role in localStorage
-    localStorage.setItem('jwtToken', token);
-    localStorage.setItem('role', role); // Ensure role is saved too
-
-    setErrorMessage('');
-
-    // Redirect to appropriate page based on role
-    if (role === 'reader') {
-      navigate('/reader', { state: { username } });
-    } else if (role === 'author') {
-      navigate('/author', { state: { username } });
-    }
-
-  } catch (error) {
-    console.error('Error:', error.response ? error.response.data : error.message);
-    setErrorMessage('An error occurred. Please try again.');
-  }
-};
-
-
-
+  
+  
+  
   const handleSearch = async () => {
     try {
       const queryParams = [];
@@ -213,30 +158,14 @@ const handleSubmit = async (e) => {
       });
     }
   };
-  
+  const handleAboutUs = ()=>{
+navigate("/aboutUs");
+  }
 
 return (
   <div className='homepage'>
-  <nav id="navbar">
-      <a href="#">Blog</a>
-      <a href="#" onClick={openModalForReaders}>For Readers</a>
-      <a href="#" onClick={openModalForAuthors}>For Authors</a>
-      <div className="search-bar">
-          <select value={searchType} onChange={(e) => setSearchType(e.target.value)}>
-              <option value="title">Title</option>
-              <option value="author">Author</option>
-              <option value="genre">Genre</option>
-              <option value="ratings">Rating</option>
-              </select>
-          <input
-              type="text"
-              placeholder={`Search by ${searchType}...`}
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-          />
-          <button onClick={handleSearch}>Search</button>
-      </div>
-  </nav>
+<Navbar />
+
       <div className="start-page">
         <img src={bookimage} className="image-center" alt="Background" />
         <div className="text-container">
@@ -252,7 +181,7 @@ return (
       <FeaturedPosts />
       <Quote />
       <Newsletter />
-      <SocialIcons />
+      <SocailIcons/>
   
       {/* Sign In / Sign Up Modal */}
       <Modal isOpen={isModalOpen} closeModal={() => setModalOpen(false)} title={isAuthor ? "For Authors" : "For Readers"}>
@@ -331,26 +260,7 @@ function Newsletter() {
   );
 }
 
-function SocialIcons() {
-  return (
-    <div className="social-icons">
-      <a href="https://www.facebook.com">
-        <FaFacebookF />
-      </a>
-      <a href="https://instagram.com">
-        <FaInstagram />
-      </a>
-      <a href="tel:+1234567890" aria-label="Phone">
-        <FaPhoneAlt />
-      </a>
-      <a href="mailto:example@example.com" aria-label="Email">
-        <FaEnvelope />
-      </a>
-    </div>
-  
-  );
 
-}
 
 export default function MainApp() {
   return (
@@ -360,6 +270,8 @@ export default function MainApp() {
     <Route path="/reader" element={<ReaderPage />} /> {/* Ensure this path and component exist */}
     <Route path="/author" element={<AuthorPage />} /> 
     <Route path="/search-results" element={<SearchResult />} />
+    <Route path="/calendar" element={<CalendarPage />} />
+    <Route path="/aboutUs" element={<AboutUs />}/>
   </Routes>
 </Router>
 
