@@ -4,9 +4,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUserFriends, faCalendarAlt, faPencilAlt, faMagnifyingGlass, faTrash } from '@fortawesome/free-solid-svg-icons';
 import axios from 'axios';
 import { useNavigate, useLocation } from 'react-router-dom';
-import avatar from '../assets/avatar.jpg'
+import avatar from './assets/avatar.jpg'
 import EditProfile from "./EditProfile";
-
 
 export function Reader() {
   const [profilePic, setProfilePic] = useState(avatar);
@@ -20,10 +19,6 @@ export function Reader() {
   const username = location.state?.username;
   
   const navigate = useNavigate();
-
-  const handleCalendarClick = () => {
-    navigate("/calendar");
-  };
 
   // Sample books2024 array defined inside the component
   const books2024 = [
@@ -91,7 +86,8 @@ export function Reader() {
   const handleSearch = async () => {
     try {
       const queryParams = [];
-      
+  
+      // Build query parameters based on searchType and searchTerm
       if (searchType === 'ratings' && searchTerm) {
         const ratingValue = parseFloat(searchTerm);
         if (!isNaN(ratingValue) && ratingValue >= 0 && ratingValue <= 5) {
@@ -100,6 +96,9 @@ export function Reader() {
           console.error('Rating must be a number between 0 and 5');
           return;
         }
+      } else if (searchType === 'status' && searchTerm) {
+        // If searching by reader status (e.g., "Currently Reading", "Read")
+        queryParams.push(`status=${encodeURIComponent(searchTerm)}`);
       } else if (searchTerm) {
         queryParams.push(`${searchType}=${encodeURIComponent(searchTerm)}`);
       }
@@ -109,22 +108,23 @@ export function Reader() {
   
       navigate('/search-results', {
         state: {
-          searchResults: response.data || [],
+          searchResults: response.data.books || [], // Pass results or empty array if none
           searchType,
-          searchTerm
+          searchTerm,
         }
       });
     } catch (error) {
       console.error('Error fetching search results:', error);
       navigate('/search-results', {
         state: {
-          searchResults: [],
+          searchResults: [], // Navigate with empty results on error
           searchType,
-          searchTerm
+          searchTerm,
         }
       });
     }
   };
+  
 
   const scrollList = (direction, listId) => {
     const list = document.getElementById(listId).querySelector('.scroll-items');
@@ -135,6 +135,8 @@ export function Reader() {
       list.scrollBy({ left: scrollAmount, behavior: 'smooth' });
     }
   };
+ // const navigate = useNavigate(); // Initialize navigate
+
 
   const handleEditClick = () => {
     setIsEditing((prevIsEditing) => !prevIsEditing);
@@ -142,15 +144,19 @@ export function Reader() {
 
   const handleLogout = async () => {
     try {
+      console.log('Sending logout request...');
       const response = await axios.post("http://localhost:8002/reader/logout", {}, {
         headers: {
-          Authorization: `Bearer ${localStorage.getItem('token')}`
+          Authorization: `Bearer ${localStorage.getItem('jwtToken')}`
         }
       });
+      console.log('Server response:', response); // Log response to check server status
+
       if (response.status === 200) {
         console.log("Logout successful:", response.data);
-        localStorage.removeItem('token');
-        navigate('/#');
+        localStorage.removeItem('jwtToken');
+        localStorage.removeItem('role');
+          navigate('/#');
       }
     } catch (error) {
       console.error("Logout failed:", error);
@@ -177,7 +183,7 @@ export function Reader() {
           <button onClick={handleSearch}><FontAwesomeIcon icon={faMagnifyingGlass} /></button>
         </div>
         <FontAwesomeIcon icon={faUserFriends} className="icon-style" />
-        <FontAwesomeIcon icon={faCalendarAlt} className="icon-style" onClick={handleCalendarClick} />
+        <FontAwesomeIcon icon={faCalendarAlt} className="icon-style" />
         <FontAwesomeIcon icon={faPencilAlt} className="icon-style" />
         <a href="#">
           <img src={navbarProfilePic} alt="Profile" className="small-profile-pic" id="profile-pic" />
