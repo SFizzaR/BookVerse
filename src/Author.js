@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from "react";
 import "./user.css";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faUserFriends, faCalendarAlt, faPencilAlt } from '@fortawesome/free-solid-svg-icons';
+import { faUserFriends, faCalendarAlt, faPencilAlt, faTrash } from '@fortawesome/free-solid-svg-icons';
 import axios from 'axios';
 import { useNavigate, useLocation } from 'react-router-dom';
 import avatar from './assets/avatar.jpg';
+import EditProfile from "./EditProfile";
 
 export function Author() {
   const [profilePic, setProfilePic] = useState(avatar);
@@ -17,7 +18,9 @@ export function Author() {
   const username = location.state?.username;
   const authorId = location.state?.authorId || null; // Get authorId from location state
 
-
+  const handleCalendarClick = () => {
+    navigate("/calendar");
+  };
   const handleSearch = async () => {
     try {
       const queryParams = [];
@@ -134,8 +137,20 @@ let seriesNum = MySeries.length;
       console.error("Logout failed:", error);
     }
   };
-    
 
+   const scrollList = (direction, listId) => {
+    const list = document.getElementById(listId).querySelector('.scroll-items');
+    const scrollAmount = 200; 
+    if (direction === 'left') {
+      list.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
+    } else if (direction === 'right') {
+      list.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+    }
+  };
+
+    const handleEditClick = () => {
+    setIsEditing((prevIsEditing) => !prevIsEditing);
+  };
   return (
     <div className="author-page">
       <div id="user-navbar">
@@ -153,10 +168,10 @@ let seriesNum = MySeries.length;
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
-          <button onClick={handleSearch}>Search</button>
+          <button onClick={handleSearch}><FontAwesomeIcon icon={faMagnifyingGlass} /></button>
         </div>
         <FontAwesomeIcon icon={faUserFriends} className="icon-style" />
-        <FontAwesomeIcon icon={faCalendarAlt} className="icon-style" />
+        <FontAwesomeIcon icon={faCalendarAlt} className="icon-style" onClick={handleCalendarClick} />
         <FontAwesomeIcon icon={faPencilAlt} className="icon-style" />
         <a href="#">
           <img src={navbarProfilePic} alt="Profile" className="small-profile-pic" id="profile-pic" />
@@ -169,44 +184,70 @@ let seriesNum = MySeries.length;
         <input type="file" id="file-input" accept="image/*" style={{ display: "none" }} onChange={handleFileChange} />
         <h4 id="username">{username}</h4>
         <h5>Badges</h5>
-        <button className="edit-profile-button">Edit Profile</button>
+    <button onClick={handleEditClick} className="edit-profile-button">
+        {isEditing ? "Cancel Edit" : "Edit Profile"}
+      </button>
         <button className="logout-button" onClick={handleLogout}>Log Out</button>
       </div>
 
       <div className="content-wrapper">
         <div className="My-books">
-          <div className="header-container">
-            <h2 className="header">Current Reads</h2>
-            <h2 className="number">{Mybooks.length}</h2>
-          </div>
-          <div id="my-book-list">
-            {Mybooks.map((book) => (
+        <div className="header-container">
+    <h2 className="header">Current Reads</h2>
+    <h2 className="number">{booksNum}</h2>
+  </div>
+       
+          <div id="my-book-list" className="scroll-container">
+          <button className="scroll-arrow left" onClick={() => scrollList('left', 'current-read-list')}>←</button>
+          <div id="current-read-list-items" className="scroll-items">
+           {currentReads.map((book) => (
               <div className="books" key={book.id}>
                 <img src={book.image} alt={book.title} width="100" />
-                <p>{book.title}</p>
+                <span
+              className="delete-icon"
+              onClick={() => handleDelete(book.id)}
+            >
+              <FontAwesomeIcon icon={faTrash} /> {/* Font Awesome trash icon */}
+            </span>
               </div>
             ))}
             <div className="add-more">+ Add More</div>
+            <button className="scroll-arrow right" onClick={() => scrollList('right', 'current-read-list')}>→</button>
+  </div>
           </div>
-        </div>
+          </div>
+       
 
         <div className="my-series">
+         
           <div className="header-container">
-            <h2 className="header">Current Series</h2>
-            <h2 className="number">{MySeries.length}</h2>
-          </div>
-          <div id="my-series-list">
-            {MySeries.map((series) => (
-              <div className="books" key={series.id}>
-                <img src={series.image} alt={series.title} width="100" />
-                <p>{series.title}</p>
+    <h2 className="header">Current Reads</h2>
+    <h2 className="number">{seriesNum}</h2>
+  </div>
+        
+         
+          <div id="my-series-list" className="scroll-container">
+          <button className="scroll-arrow left" onClick={() => scrollList('left', 'to-be-read-list')}>←</button>
+          <div id="to-be-read-list-items" className="scroll-items">
+            {tbr.map((book) => (
+              <div className="books" key={book.id}>
+                <img src={book.image} alt={book.title} width="100" />
+                <span
+              className="delete-icon"
+              onClick={() => handleDelete(book.id)}
+            >
+              <FontAwesomeIcon icon={faTrash} /> {/* Font Awesome trash icon */}
+            </span>
               </div>
             ))}
             <div className="add-more">+ Add More</div>
+            <button className="scroll-arrow right" onClick={() => scrollList('right', 'to-be-read-list')}>→</button>
+  </div>
           </div>
+        
         </div>
       </div>
-    </div>
+              </div>
   );
 };
 
