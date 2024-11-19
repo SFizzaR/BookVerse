@@ -15,7 +15,6 @@ import FeaturedPosts from './components/popularPost';
 import { books2024, summerbooks, classics } from './data/books';
 import axios from 'axios';
 import { BrowserRouter as Router, Routes, Route, useNavigate } from 'react-router-dom'; // Import Router and Routes
-import { AuthProvider } from './AuthContext';
 import CalendarPage from "./Pages/EventCaleneder.jsx";
 function App() {
   const [isModalOpen, setModalOpen] = useState(false);
@@ -24,32 +23,9 @@ function App() {
   const [username, setUsername] = useState(''); // State to track the username
   const [password, setPassword] = useState(''); // State to track the password
   const [errorMessage, setErrorMessage] = useState(''); // State to show error messages
-  const [role, setRole] = useState('');
   const [email, setEmail] = useState(''); // State to track the email
-  const [author, setAuthor] = useState('');
-  const [title, setTitle] = useState('');
-  const [genre, setGenre] = useState('');
-  const [minRating, setMinRating] = useState(0);
-  const [searchTerm, setSearchTerm] = useState('');
-const [searchType, setSearchType] = useState('title'); // Default search type
-const [searchResults, setSearchResults] = useState([]);
-const ratingOptions = [0, 1, 2, 3, 4, 5]; // Possible rating options
 
   const navigate = useNavigate(); // Hook to navigate programmatically
-
-  const openModalForReaders = () => {
-    setIsAuthor(false);
-    setSignUpMode(false); // Default to Sign In mode
-    setRole('reader'); // Set role to reader
-    setModalOpen(true);
-  };
-
-  const openModalForAuthors = () => {
-    setIsAuthor(true);
-    setSignUpMode(false); // Default to Sign In mode
-    setRole('author'); // Set role to author
-    setModalOpen(true);
-  };
 
   const handleUsernameChange = (e) => {
     const inputValue = e.target.value.replace(/\s/g, ''); // Remove spaces from input
@@ -116,51 +92,7 @@ const ratingOptions = [0, 1, 2, 3, 4, 5]; // Possible rating options
     }
   };
   
-  
-  
-  const handleSearch = async () => {
-    try {
-      const queryParams = [];
-      
-      // Build query parameters based on searchType and searchTerm
-      if (searchType === 'ratings' && searchTerm) {
-        const ratingValue = parseFloat(searchTerm);
-        if (!isNaN(ratingValue) && ratingValue >= 0 && ratingValue <= 5) {
-          queryParams.push(`minRating=${encodeURIComponent(ratingValue)}`);
-        } else {
-          console.error('Rating must be a number between 0 and 5');
-          return;
-        }
-      } else if (searchTerm) {
-        queryParams.push(`${searchType}=${encodeURIComponent(searchTerm)}`);
-      }
-  
-      const queryString = queryParams.length ? `?${queryParams.join('&')}` : '';
-      const response = await axios.get(`http://localhost:8002/home/search-books${queryString}`);
-      const searchResults = response.data.books || []; // Retrieve books from response
 
-
-      navigate('/search-results', {
-        state: {
-          searchResults, // Pass results array
-                searchType,
-                searchTerm
-        }
-      });
-    } catch (error) {
-      console.error('Error fetching search results:', error);
-      navigate('/search-results', {
-        state: {
-          searchResults: [], // Navigate with empty results on error
-          searchType,
-          searchTerm
-        }
-      });
-    }
-  };
-  const handleAboutUs = ()=>{
-navigate("/aboutUs");
-  }
 
 return (
   <div className='homepage'>
