@@ -131,6 +131,7 @@ router.post('/login', async (req, res) => {
 // Login route
 router.post('/login', async (req, res) => {
     const { username, password } = req.body;
+    let user_role;
 
     try {
         const connection = await connectToDatabase();
@@ -163,9 +164,11 @@ router.post('/login', async (req, res) => {
         }
 
         // Create a JWT token for the user
-        const token = jwt.sign({ id: user[0], role: user[4] }, 'your_jwt_secret', { expiresIn: '1h' });
+        const token = jwt.sign({ username: username, role: user_role }, process.env.JWT_SECRET, { expiresIn: '1h' });
 
         res.status(200).json({ message: 'Login successful', token, role: user[4] });
+        console.log("Generated Token:", token);
+
     } catch (error) {
         console.error('Login error:', error);
         res.status(500).json({ error: 'An error occurred during login' });
