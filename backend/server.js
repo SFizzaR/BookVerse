@@ -6,6 +6,7 @@ const homepageroutes=require('./homepageroutes');
 const authroutes=require('./authroutes');
 const readerRoutes=require('./readerRoutes');
 const readinglistroutes=require('./readingListRoutes');
+const pprofileRoutes=require('./profileRoutes');
 
 dotenv.config();
 
@@ -21,6 +22,7 @@ app.use('/home',homepageroutes);
 app.use('/author',authroutes);
 app.use('/reader',readerRoutes);
 app.use('/readinglist',readinglistroutes);
+app.use('/profile',pprofileRoutes);
 // Start the server
 app.listen(port, '0.0.0.0', () => {
 console.log(`Server is running on port ${port}`);
