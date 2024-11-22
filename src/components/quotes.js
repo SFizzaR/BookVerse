@@ -1,18 +1,22 @@
-import Sparkle from 'react-sparkle';
 import React from 'react';
 import './quotes.css';
+import { useNavigate } from 'react-router-dom';
 
 function Quote() {
+    const navigate = useNavigate(); // Hook to navigate programmatically
+
+   const handleQuotes = () =>{
+        navigate ('/quotes');
+    }
+ 
     return (
         <div className="quote">
-            <div className="sparkle-container">
-                <Sparkle color="white" count={20} fadeOut={true} />
-            </div>
+        
             <blockquote>
                 "I am not afraid of storms, for I am learning how to sail my ship."
             </blockquote>
             <div className="button">
-                <button className="moreQuotes">More Quotes</button>
+                <button className="moreQuotes" onClick={handleQuotes}>More Quotes</button>
             </div>
         </div>
     );
