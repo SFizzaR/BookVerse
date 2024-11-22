@@ -18,7 +18,7 @@ import axios from 'axios';
 import { BrowserRouter as Router, Routes, Route, useNavigate } from 'react-router-dom'; // Import Router and Routes
 import CalendarPage from "./Pages/EventCaleneder.jsx";
 import QuotePage from './Quotes-page.jsx';
-
+import Sparkle from 'react-sparkle';
 
 function App() {
   const [isModalOpen, setModalOpen] = useState(false);
@@ -105,6 +105,9 @@ return (
 
       <div className="start-page">
         <img src={bookimage} className="image-center" alt="Background" />
+        <div className="sparkle-container">
+                <Sparkle color="yellow" count={800} fadeOut={true} />
+            </div>
         <div className="text-container">
           <h1 className="book-cafe">Book Verse</h1>
         </div>
