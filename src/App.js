@@ -12,13 +12,14 @@ import bookimage from './assets/pic.jpg';
 import Quote from './components/quotes';
 import Section from './components/section';
 import FeaturedBooks from './components/featuredBooks';
-import FeaturedPosts from './components/popularPost';
+import CallToAction from './components/CallToAction.jsx';
 import { books2024, summerbooks, classics } from './data/books';
 import axios from 'axios';
 import { BrowserRouter as Router, Routes, Route, useNavigate } from 'react-router-dom'; // Import Router and Routes
 import CalendarPage from "./Pages/EventCaleneder.jsx";
 import QuotePage from './Quotes-page.jsx';
 import Sparkle from 'react-sparkle';
+import Badgepage from './Pages/badgePage.jsx';
 
 function App() {
   const [isModalOpen, setModalOpen] = useState(false);
@@ -106,7 +107,7 @@ return (
       <div className="start-page">
         <img src={bookimage} className="image-center" alt="Background" />
         <div className="sparkle-container">
-                <Sparkle color="yellow" count={800} fadeOut={true} />
+                <Sparkle color="yellow" count={250} fadeOut={true} />
             </div>
         <div className="text-container">
           <h1 className="book-cafe">Book Verse</h1>
@@ -118,7 +119,7 @@ return (
       <Section title="Top 5 Classical Reads" id="ClassicsList" books={classics} />
   
       <FeaturedBooks />
-      <FeaturedPosts />
+      <CallToAction />
       <Quote />
       <Newsletter />
       <SocailIcons/>
@@ -214,7 +215,7 @@ export default function MainApp() {
     <Route path="/aboutUs" element={<AboutUs />}/>
     <Route path='/Contact_us' element={<ContactUs/>}/>
     <Route path='/quotes' element={<QuotePage/>}/>
-   
+    <Route path='/badges' element={<Badgepage/>}/>
   </Routes>
 </Router>
 
