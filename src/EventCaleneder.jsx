@@ -4,14 +4,11 @@ import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
 import "./calender.css";
 import avatar from '../assets/avatar.jpg';
+import Navbar from "../components/navbarUser";
 
 const CalendarPage = () => {
   const [selectedDate, setSelectedDate] = useState(new Date());
   const navigate = useNavigate(); // React Router hook for navigation
-
-  const handleProfileClick = () => {
-    navigate(-1); // Navigate to the previous page
-  };
 
   // Event Arrays
   const authorEvents = [
@@ -96,12 +93,7 @@ const CalendarPage = () => {
 
   return (
     <div className="calendar-page">
-      <div id="user-navbar">
-        <h2 id="title">Book Verse</h2>
-        <a href="#profile" onClick={handleProfileClick}>
-          <img src={avatar} alt="Profile" className="small-profile-pic" id="profile-pic" />
-        </a>
-      </div>
+      <Navbar />
       
       <div className="title">Event Calendar</div>
       <div className="calendar-container">
