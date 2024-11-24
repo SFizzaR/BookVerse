@@ -1,0 +1,78 @@
+.cta-section {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 2rem;
+    background: linear-gradient(130deg, #000046, #3F00FF);
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.cta-content {
+    flex: 1;
+    padding: 1rem;
+    text-align: left;
+}
+
+.cta-content h2 {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+    color: #333;
+}
+
+.cta-content p {
+    font-size: 1.1rem;
+    margin-bottom: 1rem;
+    color: #fff;
+}
+
+.cta-icons {
+    display: flex;
+    justify-content: space-between;
+    margin: 1.5rem 0;
+}
+
+.cta-icons div {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.cta-icon {
+    font-size: 2rem;
+    color: #007bff;
+    margin-bottom: 0.5rem;
+}
+
+.cta-button {
+    background: linear-gradient(145deg, #007bff , #00c8ff);
+
+    /* Gradient for 3D effect */
+    border: none; /* Removes the border */
+    border-radius: 20px;
+    font-family: 'Hunters', sans-serif; /* Corrected font family name */
+    color: #fff;
+    margin: 0; /* Remove extra margin */
+    font-size: 27px;
+    padding: 10px 20px; /* Add padding for better button size */
+    box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.3), -5px -5px 10px rgba(255, 255, 255, 0.1); /* Shadow for 3D effect */
+    transition: box-shadow 0.3s ease; /* Smooth transition on hover */
+    cursor: pointer; /* Pointer cursor for button */
+}
+
+.cta-button:hover {
+    box-shadow: inset 5px 5px 10px rgba(0, 0, 0, 0.3), inset -5px -5px 10px rgba(255, 255, 255, 0.1)
+}
+
+.cta-image {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+}
+
+.cta-image img {
+    max-width: 100%;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
