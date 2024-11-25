@@ -1,87 +1,68 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import './EditProfile.css';
 
-const EditProfile = () => {
-  const [username, setUsername] = useState('');
-  const [email, setEmail] = useState('');
-  const [bio, setBio] = useState('');
-  const [message, setMessage] = useState('');
-  const [error, setError] = useState('');
+const EditProfile = ({ onClose }) => {
+  const [profileData, setProfileData] = useState({
+    username: '',
+    email: '',
+    bio: '',
+  });
 
-  const handleProfileUpdate = async () => {
-    const token = localStorage.getItem('jwtToken');
+  useEffect(() => {
+    axios.get('/api/profile') // Replace with your actual API endpoint
+      .then((response) => setProfileData(response.data))
+      .catch((error) => console.error('Error fetching profile data:', error));
+  }, []);
 
-    if (!token) {
-      setError('User is not authenticated');
-      return;
-    }
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setProfileData((prevData) => ({ ...prevData, [name]: value }));
+  };
 
-    try {
-      // Prepare data to send to the backend
-      const updatedData = { username, email, bio };
-
-      // Make the PUT request to update the profile
-      const response = await axios.put('http://localhost:8002/profile/profile', updatedData, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      setMessage(response.data.message); // Success message
-      setError(''); // Clear any existing errors
-
-      // Optionally, clear the form after a successful update
-      setUsername('');
-      setEmail('');
-      setBio('');
-    } catch (error) {
-      console.error('Error updating profile:', error);
-      setError(error.response?.data?.error || 'An error occurred while updating the profile');
-    }
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    axios.put('/api/profile', profileData) // Replace with your actual API endpoint
+      .then(() => {
+        alert('Profile updated successfully!');
+        onClose(); // Close the Edit Profile form after submission
+      })
+      .catch((error) => console.error('Error updating profile:', error));
   };
 
   return (
-    <div>
+    <div className="edit-profile-container">
       <h2>Edit Profile</h2>
-      <form
-        onSubmit={(e) => {
-          e.preventDefault();
-          handleProfileUpdate();
-        }}
-      >
-        <div>
-          <label>Username:</label>
+      <form onSubmit={handleSubmit}>
+        <div className="form-group">
+          <label>Username</label>
           <input
             type="text"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-            placeholder="Enter new username"
-            required
+            name="username"
+            value={profileData.username}
+            onChange={handleChange}
           />
         </div>
-        <div>
-          <label>Email:</label>
+        <div className="form-group">
+          <label>Email</label>
           <input
             type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder="Enter new email"
-            required
+            name="email"
+            value={profileData.email}
+            onChange={handleChange}
           />
         </div>
-        <div>
-          <label>Bio:</label>
+        <div className="form-group">
+          <label>Bio</label>
           <textarea
-            value={bio}
-            onChange={(e) => setBio(e.target.value)}
-            placeholder="Enter new bio"
-            required
+            name="bio"
+            value={profileData.bio}
+            onChange={handleChange}
           />
         </div>
-        <button type="submit">Update Profile</button>
+        <button type="submit" className="save-button">Save Changes</button>
+       
       </form>
-      {message && <p style={{ color: 'green' }}>{message}</p>}
-      {error && <p style={{ color: 'red' }}>{error}</p>}
     </div>
   );
 };
