@@ -1,0 +1,85 @@
+.review-form {
+    position: relative; /* Keep it in the normal document flow */
+    width: 100vw; /* Full width of the viewport */
+    min-height: 100vh; /* Full height of the viewport or more if content overflows */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(90deg, #000046 25%, blue 50%, #3F00FF 75%, purple 100%, rgb(216, 173, 181)) !important;
+    color: white;
+    text-align: center;
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden; /* Prevent horizontal scrolling caused by flex or other layout shifts */
+    box-sizing: border-box; /* Ensure padding/borders are included in width/height */
+
+  }
+  
+ .my-header {
+    text-align: center;
+    padding: 20px;
+    background-color: none;
+  }
+  
+  .review-form .container {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+  
+  .stars {
+    display: flex;
+    gap: 5px;
+    margin: 10px 0;
+  }
+  
+  .star {
+    font-size: 24px;
+    cursor: pointer;
+  }
+  
+  .star.selected {
+    color: gold;
+  }
+  
+ .review-form form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    width: 100%;
+  }
+  
+ .review-form textarea,
+ .name,
+ .submitReview {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
+#submitReview {
+    background-color: #007bff;
+    color: white;
+    cursor: pointer;
+  }
+  
+  .review-container{
+    display: flex;
+    flex-direction: column;
+    background-color: #ccc;
+    padding: 20px 244px;
+    border-radius: 10px;
+    margin:20px;
+
+  }
+  .error {
+    color: red;
+    font-size: 12px;
+  }
+  
+  .thank-you {
+    text-align: center;
+    padding: 20px;
+  }
+  
