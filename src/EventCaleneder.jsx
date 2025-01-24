@@ -3,8 +3,8 @@ import { useNavigate } from "react-router-dom"; // Import useNavigate hook for n
 import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
 import "./calender.css";
-import avatar from '../assets/avatar.jpg';
-import Navbar from "../components/navbarUser";
+import avatar from './assets/avatar.jpg';
+import Navbar from "./components/navbarUser";
 
 const CalendarPage = () => {
   const [selectedDate, setSelectedDate] = useState(new Date());
