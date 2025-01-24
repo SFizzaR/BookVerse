@@ -30,7 +30,7 @@
   }
   
  
-  body{
+  .calendar-page{
     background: linear-gradient(130deg, #000046, #3F00FF);
     justify-content: center; /* Vertically center the content */
     align-items: center; /* Horizontally center the content */
