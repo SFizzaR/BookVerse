@@ -1,68 +1,88 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import axios from 'axios';
-import './EditProfile.css';
+import './EditProfile.css'
 
-const EditProfile = ({ onClose }) => {
-  const [profileData, setProfileData] = useState({
-    username: '',
-    email: '',
-    bio: '',
-  });
+const EditProfile = () => {
+  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
+  const [bio, setBio] = useState('');
+  const [message, setMessage] = useState('');
+  const [error, setError] = useState('');
 
-  useEffect(() => {
-    axios.get('/api/profile') // Replace with your actual API endpoint
-      .then((response) => setProfileData(response.data))
-      .catch((error) => console.error('Error fetching profile data:', error));
-  }, []);
+  const handleProfileUpdate = async () => {
+    const token = localStorage.getItem('jwtToken');
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setProfileData((prevData) => ({ ...prevData, [name]: value }));
-  };
+    if (!token) {
+      setError('User is not authenticated');
+      return;
+    }
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    axios.put('/api/profile', profileData) // Replace with your actual API endpoint
-      .then(() => {
-        alert('Profile updated successfully!');
-        onClose(); // Close the Edit Profile form after submission
-      })
-      .catch((error) => console.error('Error updating profile:', error));
+    try {
+      // Prepare data to send to the backend
+      const updatedData = { username, email, bio };
+
+      // Make the PUT request to update the profile
+      const response = await axios.put('http://localhost:8002/profile/profile', updatedData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      setMessage(response.data.message); // Success message
+      setError(''); // Clear any existing errors
+
+      // Optionally, clear the form after a successful update
+      setUsername('');
+      setEmail('');
+      setBio('');
+    } catch (error) {
+      console.error('Error updating profile:', error);
+      setError(error.response?.data?.error || 'An error occurred while updating the profile');
+    }
   };
 
   return (
     <div className="edit-profile-container">
       <h2>Edit Profile</h2>
-      <form onSubmit={handleSubmit}>
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
+          handleProfileUpdate();
+        }}
+      >
         <div className="form-group">
-          <label>Username</label>
+          <label>Username:</label>
           <input
             type="text"
-            name="username"
-            value={profileData.username}
-            onChange={handleChange}
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+            placeholder="Enter new username"
+            required
           />
         </div>
         <div className="form-group">
-          <label>Email</label>
+          <label>Email:</label>
           <input
             type="email"
-            name="email"
-            value={profileData.email}
-            onChange={handleChange}
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="Enter new email"
+            required
           />
         </div>
         <div className="form-group">
-          <label>Bio</label>
+          <label>Bio:</label>
           <textarea
-            name="bio"
-            value={profileData.bio}
-            onChange={handleChange}
+            value={bio}
+            onChange={(e) => setBio(e.target.value)}
+            placeholder="Enter new bio"
+            required
           />
         </div>
-        <button type="submit" className="save-button">Save Changes</button>
-       
+        <button type="submit" className="save-button">Update Profile</button>
       </form>
+      {message && <p style={{ color: 'green' }}>{message}</p>}
+      {error && <p style={{ color: 'red' }}>{error}</p>}
     </div>
   );
 };
