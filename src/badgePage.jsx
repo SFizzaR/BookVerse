@@ -1,13 +1,13 @@
 import React from "react";
-import Navbar from "../components/navbarUser";
-import SocialIcons from "../components/SocailIcons";
-import Badge from '../components/badge';
-import Reader from  '../components/reader-badge';
-import beg from '../assets/beg.png';
-import intermediate from '../assets/intermediate.png';
-import gold from '../assets/gold.png';
-import expert from '../assets/expert.png';
-import master from '../assets/master.png';
+import Navbar from "./components/navbarUser";
+import SocialIcons from "./components/SocailIcons";
+import Badge from './components/badge';
+import Reader from  './components/reader-badge';
+import beg from './assets/beg.png';
+import intermediate from './assets/intermediate.png';
+import gold from './assets/gold.png';
+import expert from './assets/expert.png';
+import master from './assets/master.png';
 import './badge.css';
 const bagePage = () => {
   const badges = [
