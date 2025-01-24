@@ -1,13 +1,15 @@
 import React, { useState, useEffect, useRef } from "react";
 import "./user.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {faTrash } from "@fortawesome/free-solid-svg-icons";
+import { faTrash, faChevronLeft, faChevronRight } from "@fortawesome/free-solid-svg-icons";
 import axios from "axios";
 import { useNavigate, useLocation } from "react-router-dom";
-import avatar from '../assets/avatar.jpg';
+import avatar from './assets/avatar.jpg';
 import EditProfile from "./EditProfile";
-import expert from '../assets/expert.png';
-import Navbar from "../components/navbarUser";
+//import expert from './assets/expert.png';
+import Navbar from "./components/navbarUser";
+//import Badge from './components/badge'
+
 const api = axios.create({
   baseURL: "http://localhost:8002",
 });
@@ -15,6 +17,7 @@ const api = axios.create({
 export function Reader() {
   const [profilePic, setProfilePic] = useState(avatar);
   const [isEditing, setIsEditing] = useState(false);
+  const [badge, setBadge] = useState(null);
   const [readingList, setReadingList] = useState({
     currentlyReading: [],
     read: [],
@@ -26,11 +29,10 @@ export function Reader() {
     read: { left: false, right: false },
     wantToRead: { left: false, right: false },
   });
-
+  //const [badgeFilename, setBadgeFilename] = useState(null);
   const currentlyReadingRef = useRef(null);
   const readRef = useRef(null);
   const wantToReadRef = useRef(null);
-  const fileInputRef = useRef(null);
 
   const location = useLocation();
   const username = location.state?.username;
@@ -96,29 +98,6 @@ export function Reader() {
       });
     }
   };
-
-  const settings = {
-    dots: true,
-    infinite: true,
-    speed: 500,
-    slidesToShow: 3,
-    slidesToScroll: 1,
-    responsive: [
-      {
-        breakpoint: 1024,
-        settings: {
-          slidesToShow: 2,
-        },
-      },
-      {
-        breakpoint: 600,
-        settings: {
-          slidesToShow: 1,
-        },
-      },
-    ],
-  };
-
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -126,11 +105,50 @@ export function Reader() {
       reader.onload = (event) => {
         const newProfilePic = event.target.result;
         setProfilePic(newProfilePic);
-        setNavbarProfilePic(newProfilePic);
       };
       reader.readAsDataURL(file);
     }
   };
+
+  useEffect(() => {
+    const handleResize = () => {
+      checkArrows("currentlyReading", currentlyReadingRef);
+      checkArrows("read", readRef);
+      checkArrows("wantToRead", wantToReadRef);
+    };
+  
+    handleResize();
+    window.addEventListener("resize", handleResize);
+  
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  const fetchBadge = async () => {
+    try {
+      const token = localStorage.getItem("jwtToken");
+      if (!token) {
+        console.error("User not authenticated");
+        return;
+      }
+
+      const response = await axios.get("http://localhost:8002/badges/fetchUserBadge", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (response.data) {
+        setBadge(response.data); // Save badge data
+      }
+    } catch (error) {
+      console.error("Error fetching badge:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchBadge(); // Fetch badge on component mount
+  }, []);
+
 
 
   const handleLogout = async () => {
@@ -157,85 +175,78 @@ export function Reader() {
 
   return (
     <div className="reader-page">
-      
-<Navbar />
+      <Navbar />
       <div className="side-bar">
         <h2>My Profile</h2>
         <img
           src={profilePic}
           alt="Profile"
           className="profile-pic"
-          id="profile-pic"
           onClick={() => document.getElementById("file-input").click()}
         />
         <input type="file" id="file-input" accept="image/*" style={{ display: "none" }} onChange={handleFileChange} />
         <h4 id="username">{username}</h4>
-        <h5>Badges</h5>
-        <img src={expert} id="expert-bage"></img>
-        <button className="see-more-button" onClick={() => navigate("/badges")}>
-    See More
-  </button>
+        <h5>Current Badge</h5>
+        {badge ? (
+        <div>
+          <img
+            src={`${badge.badge_icon}`} // Access the image in the public folder
+            style={{ width: "160px", height: "160px" }}
+          />
+         
+        </div>
+      ) : (
+        <p>No badge earned yet.</p>
+      )}
+
+        <button onClick={() => navigate("/badges")}>See More</button>
         <button onClick={() => setIsEditing((prev) => !prev)} className="edit-profile-button">
           {isEditing ? "Cancel Edit" : "Edit Profile"}
         </button>
         {isEditing && <EditProfile />}
-        <button className="logout-button" onClick={handleLogout}>
-          Log Out
-        </button>
+        <button className="logout-button" onClick={handleLogout}>Log Out</button>
       </div>
 
       <div className="content-wrapper">
         <h1>My Reading List</h1>
         {error && <p style={{ color: "red" }}>{error}</p>}
-{/* Currently Reading */}
-<h2>Currently Reading</h2>
-        <div className="book-list" id="currently-reading-list">
-          {arrowVisibility.currentlyReading.left && (
-            <button
-              className="scroll-arrow left"
-              onClick={() => scrollList("left", currentlyReadingRef)}
-            >
-              ←
-            </button>
-          )}
-          <div
-            className="scroll-items"
-            ref={currentlyReadingRef}
-            onScroll={() => handleScroll("currentlyReading", currentlyReadingRef)}
+
+        {/* Currently Reading */}
+        <h2>Currently Reading</h2>
+        <div className="scroll-container">
+          <button
+            className="scroll-arrow left"
+            onClick={() => scrollList("left", currentlyReadingRef)}
           >
+            <FontAwesomeIcon icon={faChevronLeft} />
+          </button>
+          <div className="book-list" ref={currentlyReadingRef}>
             {readingList.currentlyReading.map((book, index) => (
               <div key={index} className="book-item">
                 <img src={book.image} alt="Book Cover" className="book-cover" />
-                <span className="delete-icon">
-                  <FontAwesomeIcon icon={faTrash} />
-                </span>
                 <p className="book-title">{book.title}</p>
+                <p className="book-author">{book.author}</p>
               </div>
             ))}
           </div>
-          {arrowVisibility.currentlyReading.right && (
-            <button
-              className="scroll-arrow right"
-              onClick={() => scrollList("right", currentlyReadingRef)}
-            >
-              →
-            </button>
-          )}
+          <button
+            className="scroll-arrow right"
+            onClick={() => scrollList("right", currentlyReadingRef)}
+          >
+            <FontAwesomeIcon icon={faChevronRight} />
+          </button>
         </div>
 
         {/* Read */}
         <h2>Read</h2>
-        <div className="book-list" id="read-list">
-          {arrowVisibility.read.left && (
-            <button className="scroll-arrow left" onClick={() => scrollList("left", readRef)}>
-              ←
-            </button>
-          )}
-          <div
-            className="scroll-items"
-            ref={readRef}
-            onScroll={() => handleScroll("read", readRef)}
+        <div className="scroll-container">
+          <button
+            className="scroll-arrow left"
+            onClick={() => scrollList("left", readRef)}
           >
+            <FontAwesomeIcon icon={faChevronLeft} />
+          </button>
+          <div className="book-list" ref={readRef}>
             {readingList.read.map((book, index) => (
               <div key={index} className="book-item">
                 <img src={book.image} alt="Book Cover" className="book-cover" />
@@ -243,26 +254,24 @@ export function Reader() {
               </div>
             ))}
           </div>
-          {arrowVisibility.read.right && (
-            <button className="scroll-arrow right" onClick={() => scrollList("right", readRef)}>
-              →
-            </button>
-          )}
+          <button
+            className="scroll-arrow right"
+            onClick={() => scrollList("right", readRef)}
+          >
+            <FontAwesomeIcon icon={faChevronRight} />
+          </button>
         </div>
 
         {/* Want to Read */}
         <h2>Want to Read</h2>
-        <div className="book-list" id="want-to-read-list">
-          {arrowVisibility.wantToRead.left && (
-            <button className="scroll-arrow left" onClick={() => scrollList("left", wantToReadRef)}>
-              ←
-            </button>
-          )}
-          <div
-            className="scroll-items"
-            ref={wantToReadRef}
-            onScroll={() => handleScroll("wantToRead", wantToReadRef)}
+        <div className="scroll-container">
+          <button
+            className="scroll-arrow left"
+            onClick={() => scrollList("left", wantToReadRef)}
           >
+            <FontAwesomeIcon icon={faChevronLeft} />
+          </button>
+          <div className="book-list" ref={wantToReadRef}>
             {readingList.wantToRead.map((book, index) => (
               <div key={index} className="book-item">
                 <img src={book.image} alt="Book Cover" className="book-cover" />
@@ -270,19 +279,16 @@ export function Reader() {
               </div>
             ))}
           </div>
-          {arrowVisibility.wantToRead.right && (
-            <button
-              className="scroll-arrow right"
-              onClick={() => scrollList("right", wantToReadRef)}
-            >
-              →
-            </button>
-          )}
+          <button
+            className="scroll-arrow right"
+            onClick={() => scrollList("right", wantToReadRef)}
+          >
+            <FontAwesomeIcon icon={faChevronRight} />
+          </button>
         </div>
       </div>
+         
     </div>
   );
 }
 export default Reader;
-
-
