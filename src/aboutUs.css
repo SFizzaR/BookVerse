@@ -25,7 +25,8 @@ header {
     padding: 10px 0;
     text-align: center;
     text-shadow: 0 0 10px rgba(128, 122, 207, 0.8);
-    margin-top: 50px;
+    background: none;
+    margin-bottom: 20px;
 }
 
 h1 {
