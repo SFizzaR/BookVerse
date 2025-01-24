@@ -1,93 +1,108 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect,useRef } from "react";
 import "./user.css";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faTrash, faChevronLeft, faChevronRight } from "@fortawesome/free-solid-svg-icons";
 import { faUserFriends, faCalendarAlt, faPencilAlt } from '@fortawesome/free-solid-svg-icons';
 import axios from 'axios';
 import { useNavigate, useLocation } from 'react-router-dom';
 import avatar from './assets/avatar.jpg';
+import EditProfile from "./EditProfile";
+import UserNavbar from "./components/navbarUser";
+
+import Slider from "react-slick";
 
 export function Author() {
   const [profilePic, setProfilePic] = useState(avatar);
-  const [navbarProfilePic, setNavbarProfilePic] = useState(avatar);
-  const [searchType, setSearchType] = useState('title');
-  const [searchTerm, setSearchTerm] = useState('');
-  const [searchResults, setSearchResults] = useState([]);
+  const [isEditing, setIsEditing] = useState(false);
+  const [badge, setBadge] = useState(null);
+
+  const [readingList, setReadingList] = useState({
+    currentlyReading: [],
+    read: [],
+    wantToRead: [],
+  });
+  const [error, setError] = useState(null);
+  const [arrowVisibility, setArrowVisibility] = useState({
+    currentlyReading: { left: false, right: false },
+    read: { left: false, right: false },
+    wantToRead: { left: false, right: false },
+  });
+  //const [badgeFilename, setBadgeFilename] = useState(null);
+  const currentlyReadingRef = useRef(null);
+  const readRef = useRef(null);
+  const wantToReadRef = useRef(null);
 
   const location = useLocation();
   const username = location.state?.username;
   const authorId = location.state?.authorId || null; // Get authorId from location state
 
+  const checkArrows = (listId, ref) => {
+    const scrollable = ref.current;
+    if (scrollable) {
+      setArrowVisibility((prev) => ({
+        ...prev,
+        [listId]: {
+          left: scrollable.scrollLeft > 0,
+          right: scrollable.scrollLeft + scrollable.clientWidth < scrollable.scrollWidth,
+        },
+      }));
+    }
+  };
 
-  const handleSearch = async () => {
-    try {
-      const queryParams = [];
-      
-      // Build query parameters based on searchType and searchTerm
-      if (searchType === 'ratings' && searchTerm) {
-        const ratingValue = parseFloat(searchTerm);
-        if (!isNaN(ratingValue) && ratingValue >= 0 && ratingValue <= 5) {
-          queryParams.push(`minRating=${encodeURIComponent(ratingValue)}`);
-        } else {
-          console.error('Rating must be a number between 0 and 5');
+  useEffect(() => {
+    const fetchReadingList = async () => {
+      try {
+        const token = localStorage.getItem("jwtToken");
+        if (!token) {
+          setError("User is not authenticated");
           return;
         }
-      } else if (searchTerm) {
-        queryParams.push(`${searchType}=${encodeURIComponent(searchTerm)}`);
+
+        const response = await axios.get("http://localhost:8002/reader/getreadinglist", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        setReadingList(response.data); // Update the state with fetched data
+      } catch (err) {
+        console.error("Error fetching reading list:", err);
+        setError("Failed to fetch the reading list");
       }
-  
-      const queryString = queryParams.length ? `?${queryParams.join('&')}` : '';
-      const response = await axios.get(`http://localhost:8002/author/search-books${queryString}`);
-      const searchResults = response.data.books || []; // Retrieve books from response
+    };
 
+    fetchReadingList();
+    const handleResize = () => {
+      checkArrows("currentlyReading", currentlyReadingRef);
+      checkArrows("read", readRef);
+      checkArrows("wantToRead", wantToReadRef);
+    };
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
-      navigate('/search-results', {
-        state: {
-          searchResults, // Pass results array
-                searchType,
-                searchTerm
-        }
-      });
-    } catch (error) {
-      console.error('Error fetching search results:', error);
-      navigate('/search-results', {
-        state: {
-          searchResults: [], // Navigate with empty results on error
-          searchType,
-          searchTerm
-        }
+  const handleScroll = (listId, ref) => {
+    checkArrows(listId, ref);
+  };
+
+  const scrollList = (direction, ref) => {
+    const scrollable = ref.current;
+    const scrollAmount = 200;
+    if (scrollable) {
+      scrollable.scrollBy({
+        left: direction === "left" ? -scrollAmount : scrollAmount,
+        behavior: "smooth",
       });
     }
   };
 
+
+
+
   const navigate = useNavigate(); // Initialize navigate
 
-  const Mybooks = [
-    {
-      id: "book1",
-      title: "As Good As Dead",
-      image: "https://friendsbook.pk/cdn/shop/files/9781405298612_67a65aa0-a2ba-4670-bc5c-108a884bda42.webp?v=1702059099",
-    },
-    {
-      id: "book2",
-      title: "Unsouled",
-      image: "https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1654571019i/30558257.jpg",
-    },
-  ];
 
-  const MySeries = [
-    {
-      id: "book1",
-      title: "The Silent Patient",
-      image: "https://book-shelf.pk/cdn/shop/files/383765699_972040427418031_3870065130882927535_n.jpg?v=1695575089",
-    },
-    {
-      id: "book2",
-      title: "Other Words For Home",
-      image: "https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1539183359i/35398627.jpg",
-    },
-  ];
-let booksNum = Mybooks.length;
-let seriesNum = MySeries.length;
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
@@ -96,11 +111,36 @@ let seriesNum = MySeries.length;
       reader.onload = (event) => {
         const newProfilePic = event.target.result;
         setProfilePic(newProfilePic);
-        setNavbarProfilePic(newProfilePic);
       };
       reader.readAsDataURL(file);
     }
   };
+
+  const fetchBadge = async () => {
+    try {
+      const token = localStorage.getItem("jwtToken");
+      if (!token) {
+        console.error("User not authenticated");
+        return;
+      }
+
+      const response = await axios.get("http://localhost:8002/badges/fetchUserBadge", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (response.data) {
+        setBadge(response.data); // Save badge data
+      }
+    } catch (error) {
+      console.error("Error fetching badge:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchBadge(); // Fetch badge on component mount
+  }, []);
 
   const handleLogout = async () => {
     try {
@@ -111,7 +151,7 @@ let seriesNum = MySeries.length;
       }
   
       console.log('Sending logout request...');
-      const response = await axios.post("http://localhost:8002/reader/logout", {}, {
+      const response = await axios.post("http://localhost:8002/author/logout", {}, {
         headers: {
           Authorization: `Bearer ${token}`
         }
@@ -138,74 +178,115 @@ let seriesNum = MySeries.length;
 
   return (
     <div className="author-page">
-      <div id="user-navbar">
-        <h2 id="title">Book Verse</h2>
-        <div className="user-search-bar">
-          <select value={searchType} onChange={(e) => setSearchType(e.target.value)}>
-            <option value="title">Title</option>
-            <option value="author">Author</option>
-            <option value="genre">Genre</option>
-            <option value="ratings">Rating</option>
-          </select>
-          <input
-            type="text"
-            placeholder={`Search by ${searchType}...`}
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
-          <button onClick={handleSearch}>Search</button>
-        </div>
-        <FontAwesomeIcon icon={faUserFriends} className="icon-style" />
-        <FontAwesomeIcon icon={faCalendarAlt} className="icon-style" />
-        <FontAwesomeIcon icon={faPencilAlt} className="icon-style" />
-        <a href="#">
-          <img src={navbarProfilePic} alt="Profile" className="small-profile-pic" id="profile-pic" />
-        </a>
-      </div>
-
+      <UserNavbar/>
       <div className="side-bar">
         <h2>My Profile</h2>
         <img src={profilePic} alt="Profile" className="profile-pic" id="profile-pic" onClick={() => document.getElementById('file-input').click()} />
         <input type="file" id="file-input" accept="image/*" style={{ display: "none" }} onChange={handleFileChange} />
         <h4 id="username">{username}</h4>
         <h5>Badges</h5>
-        <button className="edit-profile-button">Edit Profile</button>
+        {badge ? (
+        <div>
+          <img
+            src={`/${badge.badge_icon}`} // Access the image in the public folder
+            style={{ width: "160px", height: "160px" }}
+          />
+         
+        </div>
+      ) : (
+        <p>No badge earned yet.</p>
+      )}
+
+
+        <button onClick={() => setIsEditing((prev) => !prev)} className="edit-profile-button">
+          {isEditing ? "Cancel Edit" : "Edit Profile"}
+        </button>
+        {isEditing && <EditProfile />}
         <button className="logout-button" onClick={handleLogout}>Log Out</button>
       </div>
-
       <div className="content-wrapper">
-        <div className="My-books">
-          <div className="header-container">
-            <h2 className="header">Current Reads</h2>
-            <h2 className="number">{Mybooks.length}</h2>
-          </div>
-          <div id="my-book-list">
-            {Mybooks.map((book) => (
-              <div className="books" key={book.id}>
-                <img src={book.image} alt={book.title} width="100" />
-                <p>{book.title}</p>
+        <h1>My Reading List</h1>
+        {error && <p style={{ color: "red" }}>{error}</p>}
+
+        {/* Currently Reading */}
+        <h2>Currently Reading</h2>
+        <div className="scroll-container">
+          <button
+            className="scroll-arrow left"
+            onClick={() => scrollList("left", currentlyReadingRef)}
+          >
+            <FontAwesomeIcon icon={faChevronLeft} />
+          </button>
+          <div className="book-list" ref={currentlyReadingRef}>
+            {readingList.currentlyReading.map((book, index) => (
+              <div key={index} className="book-item">
+                <img src={book.image} alt="Book Cover" className="book-cover" />
+                <p className="book-title">{book.title}</p>
+                <p className="book-author">{book.author}</p>
               </div>
             ))}
-            <div className="add-more">+ Add More</div>
           </div>
+          <button
+            className="scroll-arrow right"
+            onClick={() => scrollList("right", currentlyReadingRef)}
+          >
+            <FontAwesomeIcon icon={faChevronRight} />
+          </button>
         </div>
 
-        <div className="my-series">
-          <div className="header-container">
-            <h2 className="header">Current Series</h2>
-            <h2 className="number">{MySeries.length}</h2>
-          </div>
-          <div id="my-series-list">
-            {MySeries.map((series) => (
-              <div className="books" key={series.id}>
-                <img src={series.image} alt={series.title} width="100" />
-                <p>{series.title}</p>
+        {/* Read */}
+        <h2>Read</h2>
+        <div className="scroll-container">
+          <button
+            className="scroll-arrow left"
+            onClick={() => scrollList("left", readRef)}
+          >
+            <FontAwesomeIcon icon={faChevronLeft} />
+          </button>
+          <div className="book-list" ref={readRef}>
+            {readingList.read.map((book, index) => (
+              <div key={index} className="book-item">
+                <img src={book.image} alt="Book Cover" className="book-cover" />
+                <p className="book-title">{book.title}</p>
               </div>
             ))}
-            <div className="add-more">+ Add More</div>
           </div>
+          <button
+            className="scroll-arrow right"
+            onClick={() => scrollList("right", readRef)}
+          >
+            <FontAwesomeIcon icon={faChevronRight} />
+          </button>
+        </div>
+
+        {/* Want to Read */}
+        <h2>Want to Read</h2>
+        <div className="scroll-container">
+          <button
+            className="scroll-arrow left"
+            onClick={() => scrollList("left", wantToReadRef)}
+          >
+            <FontAwesomeIcon icon={faChevronLeft} />
+          </button>
+          <div className="book-list" ref={wantToReadRef}>
+            {readingList.wantToRead.map((book, index) => (
+              <div key={index} className="book-item">
+                <img src={book.image} alt="Book Cover" className="book-cover" />
+                <p className="book-title">{book.title}</p>
+              </div>
+            ))}
+          </div>
+          <button
+            className="scroll-arrow right"
+            onClick={() => scrollList("right", wantToReadRef)}
+          >
+            <FontAwesomeIcon icon={faChevronRight} />
+          </button>
         </div>
       </div>
+         
+    
+
     </div>
   );
 };
