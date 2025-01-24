@@ -3,8 +3,8 @@ import './aboutUs.css';
 import falah from './assets/falah.jpeg';
 import zahab from './assets/zahab.jpeg';
 import fizza from './assets/fizza.jpeg';
-import SocialIcons from './components/SocailIcons.jsx';
-import Navbar from './components/navbarHome.jsx';
+import SocialIcons from './components/SocailIcons.js';
+import Navbar from './components/navbarHome.js';
 
 const AboutUs = () => {
   return (
