@@ -39,11 +39,11 @@ BookVerse is a web application designed for book enthusiasts to explore, search,
 - **Reader & Author Interactions**: Chatrooms, forums, and discussion panels  
 - **Authors Can Add Books** and manage their profiles
 ## 👥 Contributors
-| Role               | Name                     | GitHub Profile |
-|--------------------|-------------------------|---------------|
-| **Frontend Developer** | Syeda Fizza | [SFizzaR](https://github.com/SFizzaR) |
-| **Backend Developer**  | Zahab Jahangir | [zeejaycoding](https://github.com/zeejaycoding) |
-| **Frontend Developer** | Falah Khan | [FalahZKhan](https://github.com/FalahZKhan) |
+| Role               | GitHub Profile |
+|--------------------|----------------|
+| **Frontend Developer** | [SFizzaR](https://github.com/SFizzaR) |
+| **Backend Developer**  | [zeejaycoding](https://github.com/zeejaycoding) |
+| **Frontend Developer** | [FalahZKhan](https://github.com/FalahZKhan) |
 
 ## 🤝 Contributing
 Contributions are welcome! Feel free to open an issue or submit a pull request.
