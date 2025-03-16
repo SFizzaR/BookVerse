@@ -19,7 +19,7 @@ BookVerse is a web application designed for book enthusiasts to explore, search,
 ## 🚀 Installation
 1. Clone the repository:
    ```sh
-   git clone https://github.com/yourusername/BookVerse.git
+   git clone https://github.com/SFizzaR/BookVerse.git
    ```
 2. Navigate to the project directory:
    ```sh
