@@ -1,0 +1,367 @@
+@import url('https://fonts.googleapis.com/css2?family=Cookie&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@1,500&display=swap');
+.reader-page {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    background: linear-gradient(130deg, #1a1a1a, #4169e1, #3d007a, #5b2673, #8f3a73);
+    padding-top: 70px; /* Adds space for the fixed navbar */
+    display: flex;
+    height: 100vh; /* Ensures the full height of the screen is used */
+}
+
+#navbar {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    background-color: #7777aa;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    padding: 10px 20px;
+    z-index: 1000;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+#navbar a {
+    font-size: 20px;
+    font-family: 'Cookies', serif;
+    color: #FFF0D9;
+    text-decoration: none;
+    margin: 10px;
+}
+
+#navbar a:hover {
+    color: #ffffff;
+    text-shadow: 1px 1px 3px rgba(255, 255, 255, 0.7);
+}
+
+#navbar a:visited {
+    color: #F6BC8C;
+}
+
+.profile-pic {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin-left: 10px; /* Reduce left margin to decrease space */
+}
+
+.search-bar {
+    display: flex;
+    align-items: center;
+    margin-left: auto; /* Pushes the search bar to the right */
+}
+
+.search-bar input {
+    border-radius: 10px;
+    font-size: 15px;
+    width: 300px;
+    height: 30px;
+    border: none;
+    box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.3), -5px -5px 10px rgba(255, 255, 255, 0.1);
+    margin-right: 5px;
+}
+
+.search-bar button {
+    background: linear-gradient(145deg, #6200ea, #7a288a, #452064);
+    border: none;
+    border-radius: 20px;
+    font-family: 'Cookie', cursive;
+    color: #fff;
+    padding: 5px 10px;
+    box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.3), -5px -5px 10px rgba(255, 255, 255, 0.1);
+    transition: box-shadow 0.3s ease;
+    cursor: pointer;
+    font-size: 15px;
+}
+
+.search-bar button:hover {
+    box-shadow: inset 5px 5px 10px rgba(0, 0, 0, 0.3), inset -5px -5px 10px rgba(255, 255, 255, 0.1);
+}
+
+.side-bar {
+    background-color: #252525;
+    height: 100%; /* Full height of the viewport */
+    width: 20%; /* 20% of the viewport width */
+    position: fixed; /* Sidebar stays fixed */
+    left: 0;
+    top: 70px; /* Adjust based on navbar height */
+    padding: 20px;
+    display: flex; /* Use flexbox */
+    flex-direction: column; /* Arrange items vertically */
+    align-items: center; /* Center items horizontally */
+}
+
+/* Content wrapper next to the sidebar */
+.content-wrapper {
+    flex-grow: 1; /* Take up remaining space next to the sidebar */
+    margin-left: 30%; /* Leave space for the fixed sidebar */
+    padding: 20px;
+    color: white;
+    position: relative; /* Enable absolute positioning for the button */
+}
+
+.side-bar .profile-pic {
+    width: 150px; /* Increase the width */
+    height: 150px; /* Increase the height */
+    border-radius: 50%; /* Keeps it round */
+    margin-bottom: 20px; /* Add some space below the picture */
+}
+
+.side-bar h2 {
+    color: white;
+    font-size: 30px;
+    font-family: 'Playfair Display';
+    margin-bottom: 10px;
+    text-align: center; /* Center the text in the heading */
+}
+
+#title {
+    color: white;
+    font-family: 'Playfair Display', italic;
+}
+
+#username {
+    color: white;
+    font-family: 'Playfair Display';
+    font-size: 24px;
+}
+
+.content-wrapper h3 {
+    margin-top: 20px;
+    margin-bottom: 10px;
+}
+
+.filter-button {
+display: block; /* Ensure it is displayed as a block element */
+margin: 20px auto; /* Center the button horizontally and leave space around it */
+padding: 10px 15px;
+background: linear-gradient(90deg, #6200ea, #3700b3); /* Gradient from purple to darker purple */
+color: white; /* Text color */
+border: none; /* No border */
+border-radius: 5px; /* Rounded corners */
+cursor: pointer; /* Pointer cursor on hover */
+font-size: 16px; /* Font size */
+transition: background-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease; /* Smooth transition for hover effects */
+float: right;
+}
+
+.filter-button:hover {
+background: linear-gradient(90deg, #7e57c2, #5e35b1); /* Lighter gradient on hover */
+box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.3); /* Add shadow for a lifted effect */
+transform: scale(1.05); /* Slightly enlarge the button */
+}
+
+
+.recommended-list, .current-reads {
+margin-top: 20px; /* Add space between the button and the lists */
+}
+
+
+
+
+/* Modal styles */
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 1000; /* Sit on top */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgba(0, 0, 0, 0.4); /* Black w/ opacity */
+}
+
+.modal-content {
+    background-color: #4169e1;
+    margin: 15% auto; /* 15% from the top and centered */
+    padding: 20px;
+    border: 1px solid #888;
+    width: 40%; /* Could be more or less, depending on screen size */
+}
+.modal-content h3{
+color: white;
+text-align: center;
+font-size: 25px;
+font-family: 'Playfair Display';
+
+}
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.filters {
+    margin-top: 20px;
+}
+
+.filter-group {
+    margin-bottom: 15px;
+}
+
+.filter-group label {
+    color: white;
+    font-family: 'Playfair Display';
+    font-size: 18px;
+
+}
+
+.filter-group select,
+.filter-group input[type="checkbox"] {
+    margin-left: 10px;
+    border-radius: 5px;
+    padding: 5px;
+}
+
+.filter-group input[type="checkbox"] {
+    width: auto; /* Override width for checkboxes */
+}
+#Apply{
+    display: block; /* This ensures each element is on a new line */
+font-size: 20px;
+margin: 10px 0;
+width: 100%;
+background: linear-gradient(145deg, #6200ea, #7a288a, #452064);
+color: white;
+}
+.edit-profile-button {
+background: linear-gradient(90deg, #4CAF50, #2b6d2e); /* Gradient from green to darker green */
+color: white;
+padding: 10px 15px;
+border: none;
+border-radius: 5px;
+cursor: pointer;
+font-size: 16px;
+margin: 10px 0; /* Add space between buttons */
+width: 100%; /* Full width of the sidebar */
+transition: background 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease; /* Smooth transition for hover effects */
+}
+
+.edit-profile-button:hover {
+background: linear-gradient(90deg, #66BB6A, #43A047); /* Lighter green gradient on hover */
+box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2); /* Add subtle shadow for a hover effect */
+transform: scale(1.02); /* Slight enlargement on hover */
+}
+
+
+.logout-button {
+background: linear-gradient(90deg, #f44336, #af2727); /* Gradient from red to darker red */
+color: white;
+padding: 10px 15px;
+border: none;
+border-radius: 5px;
+cursor: pointer;
+font-size: 16px;
+width: 100%; /* Full width of the sidebar */
+transition: background 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease; /* Smooth transition for hover effects */
+}
+
+.logout-button:hover {
+background: linear-gradient(90deg, #ff7961, #d32f2f); /* Lighter red gradient on hover */
+box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2); /* Add subtle shadow for a hover effect */
+transform: scale(1.02); /* Slight enlargement on hover */
+}
+
+.book-list {
+display: flex;
+gap: 10px; /* Space between each book */
+flex-wrap: wrap; /* Allows wrapping of books to the next line */
+justify-content: flex-start;
+}
+
+.book {
+margin-top: 20px;
+width: 180px; /* Increased width */
+}
+
+.book img {
+width: 160px; /* Adjust width */
+height: 240px; /* Adjust height */
+object-fit: cover;
+transition: transform 0.3s ease-in-out;
+box-shadow: 0 10px 15px rgba(0, 0, 0, 0.3); /* Shadow only at the bottom */
+}
+
+.book img:hover {
+transform: scale(1.05); /* Slight zoom on hover */
+}
+
+.current-reads, .tbr {
+    display: flex;
+    align-items: center; /* Align items in the same line */
+    gap: 10px; /* Optional: Adds space between the header and number */
+    margin-top: 20px;
+}
+
+
+.header {
+    font-size: 33px;
+    margin: 0;
+}
+
+.number {
+    font-size: 24px;
+    margin-left: auto;
+}
+
+
+.add-more {
+border: 2px dotted #f0f0f0; /* Dotted border */
+width: 180px; /* Match the book width */
+height: 240px; /* Match the book height */
+display: flex; /* Use flexbox for centering */
+justify-content: center; /* Center text horizontally */
+align-items: center; /* Center text vertically */
+margin-top: 20px; /* Align with book margin-top */
+font-weight: bold; /* Make the text bold */
+color: #f0f0f0; /* Text color */
+cursor: pointer; /* Change cursor to pointer on hover */
+}
+
+.add-more:hover {
+background-color: #6200ea; /* Change background on hover */
+}
+.icon-style {
+    margin-left: 8px;
+    color: #f0f0f0;
+  }
+  
+  .section{
+    height: 130px;
+    width: 1200px;
+    background: linear-gradient(#452064, #7a288a, #452064);
+    box-shadow: 0 10px 15px rgba(0, 0, 0, 0.3);
+    margin-top: 20px;
+    border-radius: 10px;
+    display: flex;
+    justify-content: center;
+}
+.section p{
+text-align: center;
+}
+
+.side-bar h5{
+color: #f0f0f0;
+font-size: 15px;
+margin-top: 10px;
+margin-bottom: 10px;
+}
+.container{
+    flex-grow: 1;
+    display: flex;
+    justify-content:  flex-start; /* Horizontal centering */
+    align-items: flex-start; /* Align to the top */
+    padding-left: 20px;
+    padding-right: 10px;
+}
